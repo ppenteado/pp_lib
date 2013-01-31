@@ -1,3 +1,8 @@
+; docformat = 'rst'
+
+;+
+; :Author: Paulo Penteado (http://www,ppenteado.net), Jan/2013
+;-
 ;+
 ; :Description:
 ;    Returns a structure with a subset of the fields from the input structure,
