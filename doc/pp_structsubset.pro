@@ -29,19 +29,32 @@
 ;     print,pp_structsubset(structin,['d','b'])
 ;     ;{      -9.5000000       4.8500000       17.000000
 ;     ;something}
-;     
-;   
-;   
-;
-;
 ;
 ; :Author: Paulo Penteado (http://www.ppenteado.net), Jan/2013
 ;-
 function pp_structsubset,structin,fields
 compile_opt idl2,logical_predicate
+on_error,2
 tn=tag_names(structin)
 fi=strupcase(fields)
+;Check if all field names are valid
+nfi=n_elements(fi)
+val=lonarr(nfi)
+sfi=fi[sort(fi)]
+ufi=sfi[uniq(sfi)]
+if n_elements(ufi) ne nfi then begin
+  vl=value_locate(ufi,fi)
+  h=histogram(vl,binsize=1,min=0)
+  w=where(h gt 1)
+  message,string('There are repeated fields: ',strjoin(ufi[w],','))
+endif
+for i=0,nfi-1 do begin
+  w=where(tn eq fi[i],count)
+  val[i]+=count
+endfor
+w=where(val eq 0,count)
+if count then message,string('Fields not found: ',strjoin(string(fi[w]),','),' (elements ',strjoin(strtrim(w,2),','),')')
 structout=create_struct(fi[0],structin.(where(tn eq fi[0])))
-for i=1,n_elements(fi)-1 do structout=create_struct(structout,fi[1],structin.(where(tn eq fi[i])))
+for i=1,nfi-1 do structout=create_struct(structout,fi[i],structin.(where(tn eq fi[i])))
 return,structout
 end
