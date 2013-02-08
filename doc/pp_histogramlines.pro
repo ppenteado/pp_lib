@@ -27,6 +27,9 @@
 ;      hist=histogram(values,min=-3d0,max=3d0,binsize=0.1,locations=loc)
 ;      pp_histogramlines,loc,hist,x=x,y=y
 ;      iplot,x,y,color='red',name='Gaussian',insert_legend=[0.3,0.5],thick=2.
+;
+;    Now add a histogram for 10000 Gamma(1)-distributed doubles::
+;   
 ;      values=randomu(seed,10000,gamma=1d0,/double)
 ;      hist=histogram(values,min=-3d0,max=3d0,binsize=0.1,locations=loc)
 ;      pp_histogramlines,loc,hist,x=x,y=y
