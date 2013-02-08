@@ -1,3 +1,7 @@
+; docformat = 'rst'
+;+
+; :Author: Paulo Penteado (http://www,ppenteado.net),
+;-
 ;+
 ; :Description:
 ;    Makes x and y coordinates to make a histogram plot that looks the usual way,
@@ -27,6 +31,10 @@
 ;      hist=histogram(values,min=-3d0,max=3d0,binsize=0.1,locations=loc)
 ;      pp_histogramlines,loc,hist,x=x,y=y
 ;      iplot,x,y,color='blue',name='Gamma(1)',/insert_legend,/over,thick=2.
+;      
+;    Which would result in
+;    
+;    .. image:: pp_histogramlines.png
 ;
 ; :Author: Paulo Penteado (pp.penteado@gmail.com), Jan/2013
 ;-
