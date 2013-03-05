@@ -17,6 +17,12 @@
 ;      of histogram(), where each element is an array containing the indices of
 ;      the elements of the input array that fall into the corresponding bin. If
 ;      a bin is empty, the corresponding list element is !null.
+;    reverse_hash : out, optional
+;      A list of reverse indices: has the same number of elements as the output
+;      of histogram(), where each element contains an array containing the indices of
+;      the elements of the input array that fall into the corresponding bin. If
+;      a bin is empty, the corresponding hash element is !null. The key for each element
+;      is the bin location (as returned by the locations keyword).
 ;    reverse_indices : out, optional
 ;      The reverse indices, as an array, unaltered from the output of
 ;      histogram(). See the help on histogram() for more details on
@@ -28,23 +34,30 @@
 ; :Examples:
 ;   Make up a few random values and see the list returned by histogram_pp()::
 ;   
-;     vals=randomu(0L,15)*7d0
-;     print,vals
-;     ;  2.9119955      0.64375425       5.2948734       3.7079015       6.5130554       2.6845145       4.5774329      0.46789565       5.0586230       4.6980456
-;     ;  2.6839095       4.4214430       6.1929501       3.6359147       4.5606301
-;     h=histogram_pp(vals,reverse_indices=ri,reverse_list=rl)
+;     vals=randomu(0L,15)*13d0
+;     h=histogram_pp(vals,reverse_indices=ri,reverse_list=rl,locations=loc,reverse_hash=rh)
 ;     print,h
-;     ;      2           0           3           3           5           1           1
+;     ;1           3           0           4           2           1           0           4
 ;     print,ri[ri[0]:ri[1]-1]
-;     ;      1           7
+;     ;13
 ;     foreach el,rl,i do print,i,' : ',el
-;     ;      0 :            1           7
-;     ;      1 : !NULL
-;     ;      2 :            0           5          10
-;     ;      3 :            3          11          13
-;     ;      4 :            2           6           8           9          14
-;     ;      5 :           12
-;     ;      6 :            4
+;     ;0 :           13
+;     ;1 :            8          11          12
+;     ;2 : !NULL
+;     ;3 :            0           1           4           6
+;     ;4 :            9          10
+;     ;5 :            2
+;     ;6 : !NULL
+;     ;7 :            3           5           7          14
+;     foreach el,loc do print,el,' : ',rh[el]
+;     ;3.8679500 :           13
+;     ;4.8679500 :            8          11          12
+;     ;5.8679500 : !NULL
+;     ;6.8679500 :            0           1           4           6
+;     ;7.8679500 :            9          10
+;     ;8.8679500 :            2
+;     ;9.8679500 : !NULL
+;     ;10.867950 :            3           5           7          14
 ;      
 ; :Requires: IDL 8.0.
 ;
