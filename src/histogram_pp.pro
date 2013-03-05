@@ -18,7 +18,7 @@
 ;      the elements of the input array that fall into the corresponding bin. If
 ;      a bin is empty, the corresponding list element is !null.
 ;    reverse_hash : out, optional
-;      A list of reverse indices: has the same number of elements as the output
+;      A hash of reverse indices: has the same number of elements as the output
 ;      of histogram(), where each element contains an array containing the indices of
 ;      the elements of the input array that fall into the corresponding bin. If
 ;      a bin is empty, the corresponding hash element is !null. The key for each element
