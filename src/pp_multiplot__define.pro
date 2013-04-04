@@ -235,7 +235,7 @@ endif else self.owindow=window(_extra=ex,title=gtitle)
 ;Parameters that depend on the window's existence
 if (n_elements(gxtitle) eq 1) then self.setproperty,global_xtitle=gxtitle
 if (n_elements(gytitle) eq 1) then self.setproperty,global_ytitle=gytitle
-if (n_elements(gtitle) ne 0) then self.setproperty,global_title=gtitle
+if (n_elements(gtitle) ne 0) then self.setproperty,title=gtitle
 
 
 return,isa(self.owindow,'graphicswin')
