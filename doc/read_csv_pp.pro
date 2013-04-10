@@ -31,7 +31,7 @@
 ;      ;print,h
 ;      ;Distance from Terminus (meters) Mean Particle size (mm) Sedimentation Rate (g/cm2yr)
 ;      
-; :Requires: `pp_isnumber`
+; :Requires: `pp_isnumber`, `read_csv_pp_strings`
 ;    
 ;    
 ;
