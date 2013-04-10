@@ -5,7 +5,7 @@
 ;-
 ;+
 ; :Description:
-;    A simple wrapper for read_csv_string, to assign field names based on either the file's column headers,
+;    A simple wrapper for read_csv_pp_strings, to assign field names based on either the file's column headers,
 ;    or a user-supplied string array.
 ;
 ; :Params:
@@ -14,7 +14,7 @@
 ;
 ; :Keywords:
 ;    _ref_extra: in, out, optional
-;      Any other arguments are simply passed to/from read_csv_string, unaltered.
+;      Any other arguments are simply passed to/from read_csv_pp_strings, unaltered.
 ;    field_names: in, optional, type=strarr(nfields)
 ;      A string array with the name to assign to each field (column) in the output. If provided, this
 ;      overrides the auto column names derived from the csv header line.
@@ -39,7 +39,7 @@
 ;-
 function read_csv_pp,filename,header=header,_ref_extra=ex,field_names=fn
 compile_opt idl2,logical_predicate
-c=read_csv_strings(filename,_strict_extra=ex,header=header)
+c=read_csv_pp_strings(filename,_strict_extra=ex,header=header)
 if (n_elements(header) eq 0) then begin
   header=[]
   foreach el,tag_names(c),i do header=[header,(c.(i))[0]]

@@ -86,7 +86,7 @@ end
 ;   MP, VIS, Oct 2009: Added keyword NSKIP and SKIP_HEADER
 ;   
 ;-
-function read_csv_strings, Filename, $
+function read_csv_pp_strings, Filename, $
   COUNT=count, $
   HEADER=header, $
   MISSING_VALUE=missingValue, $
