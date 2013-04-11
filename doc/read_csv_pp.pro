@@ -46,6 +46,21 @@ if (n_elements(header) eq 0) then begin
 endif
 nt=n_elements(tag_names(c))
 fn=n_elements(fn) eq nt ? idl_validname(fn,/convert_all) : idl_validname(header,/convert_all)
+;Check for repeated column names
+fno=fn
+while 1 do begin
+  names=hash()
+  restart=0
+  for i=0,n_elements(fno)-1 do begin
+    if names.haskey(fno[i]) then begin
+      fno[i]+='_2'
+      restart=1
+      break
+    endif else names[fno[i]]=!null
+  endfor
+  if restart then continue else break
+endwhile
+fn=fno
 ret=!null
 foreach el,tag_names(c),i do ret=create_struct(ret,fn[i],c.(i))
 return,ret
