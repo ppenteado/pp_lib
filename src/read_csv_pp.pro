@@ -47,7 +47,7 @@ endif
 nt=n_elements(tag_names(c))
 fn=n_elements(fn) eq nt ? idl_validname(fn,/convert_all) : idl_validname(header,/convert_all)
 ;Check for repeated column names
-fno=fn
+fno=strupcase(fn)
 while 1 do begin
   names=hash()
   restart=0
