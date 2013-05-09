@@ -5,8 +5,12 @@
 ;-
 ;+
 ; :Description:
-;    A simple wrapper for read_csv_pp_strings, to assign field names based on either the file's column headers,
-;    or a user-supplied string array.
+;    A simple wrapper for `read_csv_pp_strings`, to assign field names based on either the file's column headers,
+;    or a user-supplied string array. It uses `read_csv_pp_strings`, instead of IDL's read_csv,
+;    due to its superior handling of columns types. 
+;    
+; :Returns:
+;    A structure of arrays, where each field corresponds to a column read from the input file. 
 ;
 ; :Params:
 ;    filename: in, required, type=string

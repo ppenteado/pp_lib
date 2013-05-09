@@ -6,7 +6,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-    <title>pp_getcurrentlights.pro (Documentation for /software/pp_lib/src/)</title>
+    <title>pp_locate.pro (Documentation for /software/pp_lib/src/)</title>
 
     
 
@@ -158,7 +158,7 @@
 
     <script type="text/javascript">
       function setTitle() {
-        parent.document.title="pp_getcurrentlights.pro (Documentation for /software/pp_lib/src/)";
+        parent.document.title="pp_locate.pro (Documentation for /software/pp_lib/src/)";
       }
     </script>
   </head>
@@ -234,7 +234,7 @@
 
     <div class="content">
       <h2 class="directory">./</h2>
-      <h1 class="basename">pp_getcurrentlights.pro<span class="file-attributes"></span></h1>
+      <h1 class="basename">pp_locate.pro<span class="file-attributes"></span></h1>
       
 
       
@@ -260,19 +260,17 @@
         
 
         
-        <div class="routine-details details" id="pp_getcurrentlights">
-          <h2 class="routine-name"><a href="#root" class="top">top</a> <a href="pp_getcurrentlights-code.html#pp_getcurrentlights:source" class="top">source</a> pp_getcurrentlights<span class="routine-attributes"></span></h2>
+        <div class="routine-details details" id="pp_locate">
+          <h2 class="routine-name"><a href="#root" class="top">top</a> <a href="pp_locate-code.html#pp_locate:source" class="top">source</a> pp_locate<span class="routine-attributes"></span></h2>
 
           
 
-          <p class="syntax"><code><span class="var">result</span> = pp_getcurrentlights(<span class="argument"> [<a href="#pp_getcurrentlights:k:ambient">ambient</a>=<span class="var">ambient</span>]</span><span class="argument"> [, <a href="#pp_getcurrentlights:k:directional">directional</a>=<span class="var">directional</span>]</span><span class="argument"> [, <a href="#pp_getcurrentlights:k:all">all</a>=<span class="var">all</span>]</span><span class="argument"> [, <a href="#pp_getcurrentlights:k:tool">tool</a>=<span class="var">tool</span>]</span><span class="argument"> [, <a href="#pp_getcurrentlights:k:id">id</a>=<span class="var">id</span>]</span>)</code></p>
+          <p class="syntax"><code><span class="var">result</span> = pp_locate(<span class="argument"><a href="#pp_locate:p:array">array</a></span><span class="argument"> [, <a href="#pp_locate:k:histogram">histogram</a>=<span class="var">histogram</span>]</span><span class="argument"> [, <a href="#pp_locate:k:unique_values">unique_values</a>=<span class="var">unique_values</span>]</span><span class="argument"> [, <a href="#pp_locate:k:sorted_values">sorted_values</a>=<span class="var">sorted_values</span>]</span><span class="argument"> [, <a href="#pp_locate:k:no_sort">no_sort</a>=<span class="var">no_sort</span>]</span><span class="argument"> [, <a href="#pp_locate:k:unique_indices">unique_indices</a>=<span class="var">unique_indices</span>]</span><span class="argument"> [, <a href="#pp_locate:k:sort_indices">sort_indices</a>=<span class="var">sort_indices</span>]</span><span class="argument"> [, <a href="#pp_locate:k:reverse_sort">reverse_sort</a>=<span class="var">reverse_sort</span>]</span>)</code></p>
 
           
-          <div class="small "><p>    Retrieves one or both of the default lights made when a surface is created in
-    iTools or Graphics. These lights are one ambient light and one directional light.
-    By default, the directional light is returned.
-    The current graphic (iTool or Graphics) is used by default, if <a href="./pp_getcurrentlights.html#pp_getcurrentlights:k:id"><code>id</code></a> is not
-    provided.
+          <div class="small "><p>    Locates all the occurrences of all different (unique) values in the input array, similarly
+    to what would be produced by running a where() on each unique value of <a href="./pp_locate.html#pp_locate:p:array"><code>array</code></a>, but this is
+    much more efficient, since only one pass is done through the array.
 </p>
 
 <p></p>
@@ -281,46 +279,80 @@
           
 
           
+          <h3>Return value</h3>
+            <div class="small"><p>    A hash where the keys are the unique values present in <a href="./pp_locate.html#pp_locate:p:array"><code>array</code></a>, and the values
+    are the indices where they occur. See the example below.
+</p>
 
+<p></p>
+
+</div>
+          
+
+          
+          <h3>Parameters</h3>
+            <dl>
+              
+              <dt id="pp_locate:p:array">array <span class="smaller">in required </span></dt>
+              <dd class="small"><p>      An array of any type that can be sorted (integers, reals, strings, etc).
+      If <a href="./pp_locate.html#pp_locate:p:array"><code>array</code></a> is sorted, the <a href="./pp_locate.html#pp_locate:k:no_sort"><code>no_sort</code></a> keyword can be set, to avoid spending time
+      computing a sort() of <a href="./pp_locate.html#pp_locate:p:array"><code>array</code></a>.
+</p>
+
+<p></p>
+
+</dd>
+              
+            </dl>
           
 
           
           <h3>Keywords</h3>
             <dl>
               
-              <dt id="pp_getcurrentlights:k:ambient">ambient <span class="smaller">in optional default=0</span></dt>
-              <dd class="small"><p>      If set, the ambient light is the one retrieved.
+              <dt id="pp_locate:k:histogram">histogram <span class="smaller">out optional </span></dt>
+              <dd class="small"><p>      A hash where the keys are the unique values present in <a href="./pp_locate.html#pp_locate:p:array"><code>array</code></a>, and the values
 </p>
 
 </dd>
               
-              <dt id="pp_getcurrentlights:k:directional">directional <span class="smaller">in optional default=1</span></dt>
-              <dd class="small"><p>      If set, the directional light is the one retrieved.
+              <dt id="pp_locate:k:unique_values">unique_values <span class="smaller">out optional </span></dt>
+              <dd class="small"><p>      An array containing the unique values present in <a href="./pp_locate.html#pp_locate:p:array"><code>array</code></a>.
 </p>
 
 </dd>
               
-              <dt id="pp_getcurrentlights:k:all">all <span class="smaller">in optional default=0</span></dt>
-              <dd class="small"><p>      If set, both lights are retrieved, in a two-element array, with the ambient
-      light first.
+              <dt id="pp_locate:k:sorted_values">sorted_values <span class="smaller">out optional </span></dt>
+              <dd class="small"><p>      A sorted copy of <a href="./pp_locate.html#pp_locate:p:array"><code>array</code></a>.
 </p>
 
 </dd>
               
-              <dt id="pp_getcurrentlights:k:tool">tool <span class="smaller">out optional </span></dt>
-              <dd class="small"><p>      Returns the object associated with the graphic. Most useful to do a call
-      to tool.commitactions after a change in the light properites (see the example).
+              <dt id="pp_locate:k:no_sort">no_sort <span class="smaller">in optional </span></dt>
+              <dd class="small"><p>      If set, pp_locate assumes <a href="./pp_locate.html#pp_locate:p:array"><code>array</code></a> is ordered. By default, pp_locate does
+      not make this assumption, and will have to compute a sort() on <a href="./pp_locate.html#pp_locate:p:array"><code>array</code></a>. If you
+      know <a href="./pp_locate.html#pp_locate:p:array"><code>array</code></a> is sorted, this will save some time. If <a href="./pp_locate.html#pp_locate:k:no_sort"><code>no_sort</code></a> is set, but
+      <a href="./pp_locate.html#pp_locate:p:array"><code>array</code></a> is not sorted, the results may be incorrect.
 </p>
 
 </dd>
               
-              <dt id="pp_getcurrentlights:k:id">id <span class="smaller">in out optional </span></dt>
-              <dd class="small"><p>      The tool id of the graphic to operate on. This is processed by <a href="./pp_gettoolid.html#pp_gettoolid"><code>pp_gettoolid</code></a>:
-      If not provided, the current (if any) is used, and its ID is returned in this
-      variable. If one is provided but is not valid, the current one is obtained
-      instead, and returned in this variable. This can also be a Graphics identifer
-      (as from the getfullidentifier method), in which case this variable will be
-      altered to return the corresponding tool ID.
+              <dt id="pp_locate:k:unique_indices">unique_indices <span class="smaller">out optional </span></dt>
+              <dd class="small"><p>      The array of indices into the original array of the unique elements.
+</p>
+
+</dd>
+              
+              <dt id="pp_locate:k:sort_indices">sort_indices <span class="smaller">out optional </span></dt>
+              <dd class="small"><p>      The array of indices into <a href="./pp_locate.html#pp_locate:p:array"><code>array</code></a> to make it ordered: sort_indices=sort(array).
+</p>
+
+</dd>
+              
+              <dt id="pp_locate:k:reverse_sort">reverse_sort <span class="smaller">out optional </span></dt>
+              <dd class="small"><p>      An array with indices into the sorted version of array, to map the elements
+      back into the original order: while sorted_values=array[sort_indices],
+      sorted_values[reverse_sort]=array.
 </p>
 
 <p></p>
@@ -332,29 +364,31 @@
 
           
           <h3>Examples</h3>
-          <div><p>   Make a simple surface, retrieve its directional light and move it:
-<div><div><code class="listing"><span class="code-output"> surf=surface(dist(100))</span>
-</code></div></div>   This should look like
-</p>
-
-<p>      <img src="pp_getcurrentlights_ex1.png"/>
-</p>
-
-<p>   Then the direction can be retireved and changed with:
-<div><div><code class="listing"><span class="code-output"> dir_light=pp_getcurrentlights(tool=ot,id=surf.getfullidentifier())</span>
-<span class="code-output"> dir_light.getproperty,location=location</span>
-<span class="code-output"> print,location</span>
-<span class="code-output"> ;  -0.00010000000   0.00010000000   0.00010000000</span>
-<span class="code-output"> dir_light.setproperty,location=-location</span>
-</code></div></div>   Update the rendering to show the changes done:
-<div><div><code class="listing"><span class="code-output"> ot.commitactions</span>
-</code></div></div>   Which should look like
-</p>
-
-<p>      <img src="pp_getcurrentlights_ex2.png"/>
-</p>
-
-<p></p>
+          <div><p>    Create an array containing several repetitions of a few strings, and locate
+    all the occurences of each unique string:
+<div><div><code class="listing"><span class="code-output"> array=['a','j','kk','a','a','b','zrdc','29','b','29','-19','0']</span>
+<span class="code-output"> loc=pp_locate(array,sorted_values=sarray,unique_values=uarray,histogram=h)</span>
+<span class="code-output"> help,loc</span>
+<span class="code-output"> ;LOC             HASH  &lt;ID=140  NELEMENTS=8&gt;</span>
+<span class="code-output"> print,loc</span>
+<span class="code-output"> ;zrdc:                      6</span>
+<span class="code-output"> ;a:                      0                     3                     4</span>
+<span class="code-output"> ;j:                      1</span>
+<span class="code-output"> ;0:                     11</span>
+<span class="code-output"> ;-19:                     10</span>
+<span class="code-output"> ;b:                      5                     8</span>
+<span class="code-output"> ;kk:                      2</span>
+<span class="code-output"> ;29:                      7                     9</span>
+<span class="code-output"> foreach el,uarray do print,el,':',h[el]</span>
+<span class="code-output"> ;-19:                     1</span>
+<span class="code-output"> ;0:           1</span>
+<span class="code-output"> ;29:           2</span>
+<span class="code-output"> ;a:           3</span>
+<span class="code-output"> ;b:           2</span>
+<span class="code-output"> ;j:           1</span>
+<span class="code-output"> ;kk:           1</span>
+<span class="code-output"> ;zrdc:           1</span>
+</code></div></div></p>
 
 </div>
           
@@ -365,7 +399,7 @@
             <dl class="attribute small" summary="Routine author information">
               
                 <dt>Author:</dt>
-                <dd><p>Paulo Penteado (pp.penteado@gmail.com), Feb/2011
+                <dd><p>Paulo Penteado (<a href="http://www.ppenteado.net">http://www.ppenteado.net</a>), May/2013
 </p>
 
 </dd>
@@ -379,34 +413,6 @@
             </dl>
           
 
-          
-          <h3>Other attributes</h3>
-
-            <dl class="attribute small" summary="Other routine attributes">
-              
-
-              
-
-              
-
-              
-                <dt>Uses:</dt>
-                <dd><p><a href="././pp_gettoolid.html#pp_gettoolid">pp_gettoolid</a>
-</p>
-
-<p></p>
-
-</dd>
-              
-
-              
-
-              
-
-              
-
-              
-            </dl>
           
 
           
@@ -415,12 +421,12 @@
             <table class="attribute small" summary="Routine statistics">
               <tr>
                 <td class="name">Lines:</td>
-                <td><div class="box green"></div>           22 lines</td>
+                <td><div class="box green"></div>           38 lines</td>
               </tr>
 
               <tr>
                 <td class="name">McCabe complexity:</td>
-                <td><div class="box green"></div>            2</td>
+                <td><div class="box green"></div>            5</td>
               </tr>
             </table>
           
@@ -437,12 +443,12 @@
         <table class="attribute small" summary="File attributes">
           <tr>
             <td class="name">Modification date:</td>
-            <td>Thu Jan 31 21:29:45 2013</td>
+            <td>Thu May  9 19:12:13 2013</td>
           </tr>
 
           <tr>
             <td class="name">Lines:</td>
-            <td>80</td>
+            <td>111</td>
           </tr>
 
           
@@ -461,7 +467,7 @@
     
       <table class="smaller" summary="footer">
         <tr>
-          <td class="left">Produced by IDLdoc 3.6.0alpha on Thu May  9 19:12:31 2013</td>
+          <td class="left">Produced by IDLdoc 3.6.0alpha on Thu May  9 19:12:32 2013</td>
           <td class="right"><a target="_top" href="http://idldoc.idldev.com">IDLdoc project information</a></td>
         </tr>
       </table>

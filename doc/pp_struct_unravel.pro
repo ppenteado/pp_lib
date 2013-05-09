@@ -5,6 +5,10 @@
 ;-
 ;+
 ; :Description:
+;    This function is used to obtain a flat structure from a nested structure.
+;    Its output is useful as an input to write_csv (and `write_csv_pp`).
+; 
+; :Returns:
 ;    Produces a flat structure from a nested structure. If the input variable `str` does
 ;    not have nested structures, an identical copy is returned.
 ;

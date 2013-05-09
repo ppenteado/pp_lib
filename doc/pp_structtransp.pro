@@ -8,6 +8,10 @@
   ;    Given a structure of arrays, creates its transpose (an array of structures). Useful
   ;    for the output of read_csv and read_ascii, to make a structure array where each element
   ;    is a row of the table (see example below).
+  ;    
+  ; :Returns:
+  ;    An array of structures, where the fields in each element have the values from
+  ;    the corresponding element of the same fields in the input structure (see eaxmple below).
   ;
   ; :Params:
   ;    strin: in, required

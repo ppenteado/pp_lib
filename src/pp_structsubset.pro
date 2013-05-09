@@ -5,7 +5,10 @@
 ;-
 ;+
 ; :Description:
-;    Returns a structure with a subset of the fields from the input structure,
+;    Creates a structure that has a subset of the fields from the input structure.
+; 
+; :Returns:
+;    A structure with a subset of the fields from the input structure,
 ;     specified by a string array with the field names, in the desired order.
 ;     If the order of the fields did not matter, this could be done easily with
 ;      a hash. 
