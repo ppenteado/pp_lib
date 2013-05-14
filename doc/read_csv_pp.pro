@@ -44,9 +44,9 @@
 function read_csv_pp,filename,header=header,_ref_extra=ex,field_names=fn
 compile_opt idl2,logical_predicate
 c=read_csv_pp_strings(filename,_strict_extra=ex,header=header)
-if (n_elements(header) eq 0) then begin
-  header=[]
-  foreach el,tag_names(c),i do header=[header,(c.(i))[0]]
+if (n_elements(header) ne n_tags(c)) || (strtrim(strjoin(header),2) eq '') then begin
+  header=strarr(n_tags(c))
+  foreach el,tag_names(c),i do header[i]=(c.(i))[0]
 endif
 nt=n_elements(tag_names(c))
 fn=n_elements(fn) eq nt ? idl_validname(fn,/convert_all) : idl_validname(header,/convert_all)
