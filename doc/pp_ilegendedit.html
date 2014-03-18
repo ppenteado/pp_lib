@@ -6,7 +6,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-    <title>pp_contour_paths.pro (Documentation for pp_lib)</title>
+    <title>pp_ilegendedit.pro (Documentation for pp_lib)</title>
 
     
 
@@ -158,7 +158,7 @@
 
     <script type="text/javascript">
       function setTitle() {
-        parent.document.title="pp_contour_paths.pro (Documentation for pp_lib)";
+        parent.document.title="pp_ilegendedit.pro (Documentation for pp_lib)";
       }
     </script>
   </head>
@@ -234,7 +234,7 @@
 
     <div class="content">
       <h2 class="directory">./</h2>
-      <h1 class="basename">pp_contour_paths.pro<span class="file-attributes"></span></h1>
+      <h1 class="basename">pp_ilegendedit.pro<span class="file-attributes"></span></h1>
       
 
       
@@ -247,29 +247,84 @@
       
 
       
+      <div class="class-description">
+        <h2>Class description for pp_ilegendeditor</h2>
 
+          
+
+          
+
+          
+
+          
+          <h3>Fields</h3>
+            
+
+            
+            <h4>Fields in pp_ilegendeditor</h4>
+            <div class="details">
+              <dl>
+                
+                <dt>TOOL <span class="smaller">obj_new()</span></dt>
+                <dd class="small"></dd>
+                
+                <dt>LEG <span class="smaller">obj_new()</span></dt>
+                <dd class="small"></dd>
+                
+              </dl>
+            </div>
+            
+          
+      </div>
       
 
       
 
+      
+
+      
+      <div>
+        <h2>Routines</h2>
+
+        <dl class="routine-summary">
+          
+            <dt class="syntax"><a href="#pp_ilegendeditor::init"><code><span class="var">result</span> = pp_ilegendeditor::init()</code></a></dt>
+            <dd class="small"><p> This procedure allows editing some properties of an iTool legend that are not easiy accessible programatically.</p>
+
+</dd>
+          
+            <dt class="syntax"><a href="#pp_ilegendeditor::changeproperty"><code>pp_ilegendeditor::changeproperty<span class="argument">, legend</span><span class="argument">, hidebox=<span class="var">hidebox</span></span></code></a></dt>
+            <dd class="small"></dd>
+          
+            <dt class="syntax"><a href="#pp_ilegendeditor__define"><code>pp_ilegendeditor__define</code></a></dt>
+            <dd class="small"></dd>
+          
+            <dt class="syntax"><a href="#pp_ilegendedit"><code>pp_ilegendedit<span class="argument">, legend</span><span class="argument">, _ref_extra=<span class="var">_ref_extra</span></span></code></a></dt>
+            <dd class="small"></dd>
+          
+        </dl>
+      </div>
       
 
 
       
       <div id="routine-details">
-        
+        <h2>Routine details</h2>
 
         
-        <div class="routine-details details" id="pp_contour_paths">
-          <h2 class="routine-name"><a href="#root" class="top">top</a> <a href="pp_contour_paths-code.html#pp_contour_paths:source" class="top">source</a> pp_contour_paths<span class="routine-attributes"></span></h2>
+        <div class="routine-details details" id="pp_ilegendeditor::init">
+          <h2 class="routine-name"><a href="#root" class="top">top</a> <a href="pp_ilegendedit-code.html#pp_ilegendeditor::init:source" class="top">source</a> pp_ilegendeditor::init<span class="routine-attributes"></span></h2>
 
           
 
-          <p class="syntax"><code><span class="var">result</span> = pp_contour_paths(<span class="argument"><a href="#pp_contour_paths:p:z">z</a></span><span class="argument"> [, <a href="#pp_contour_paths:p:x">x</a>]</span><span class="argument"> [, <a href="#pp_contour_paths:p:y">y</a>]</span><span class="argument"> [, <a href="#pp_contour_paths:k:_ref_extra">_ref_extra</a>=<span class="var">_ref_extra</span>]</span>)</code></p>
+          <p class="syntax"><code><span class="var">result</span> = pp_ilegendeditor::init()</code></p>
 
           
-          <div class="small "><p>    Simple wrapper for the contour procedure, used to extract the contour path
-    points, and pack them into a list.
+          <div class="small "><p> This procedure allows editing some properties of an iTool legend that are not easiy accessible
+ programatically. See example below.
+</p>
+
+<p> At this time, only hiding/unhiding the legend box is implemented.
 </p>
 
 <p></p>
@@ -278,58 +333,32 @@
           
 
           
-          <h3>Return value</h3>
-            <div class="small"><p>    A list where each element has the n x,y pairs of each contour level,
-    as a [2,x] array, or and empty array when the level has no points.
+
+          
+
+          
+
+          
+          <h3>Examples</h3>
+          <div><p>    Make some plot, with a legend, then hide its box:
+<div><div><code class="listing"><span class="code-output"> iplot,[0,1],name='a',/insert_legend</span>
+<span class="code-output"> pp_ilegendedit,/hidebox</span>
+</code></div></div>    Now unhide it:
+<div><div><code class="listing"><span class="code-output"> pp_ilegendedit,hidebox=0</span>
+</code></div></div>    Working with multiple legends:
 </p>
 
-<p></p>
+<p>    By defaut, pp_ilegendedit will act over every legend on thw current iTool. To limit its action
+    to a subset of the legends, use the optional argument specifying which legend(s) to edit, a a scalar
+    (edit one legend, identified by that index), or an array, where each element is the index of one
+    legend to edit. Legend indexes start at 0:
+<div><div><code class="listing"><span class="code-output">    iplot,[0,1],name='a',/insert_legend</span>
+<span class="code-output">    iplot,[0,0],name='b',/over</span>
+<span class="code-output">    leg=pp_ilegend([0d0,0.5d0])</span>
+<span class="code-output">    pp_ilegendedit,1,/hidebox=; will act only on the second legend</span>
+</code></div></div></p>
 
 </div>
-          
-
-          
-          <h3>Parameters</h3>
-            <dl>
-              
-              <dt id="pp_contour_paths:p:z">z <span class="smaller">in required </span></dt>
-              <dd class="small"><p>      Passed unchanged to contour.
-</p>
-
-</dd>
-              
-              <dt id="pp_contour_paths:p:x">x <span class="smaller">in optional </span></dt>
-              <dd class="small"><p>      Passed unchanged to contour.
-</p>
-
-</dd>
-              
-              <dt id="pp_contour_paths:p:y">y <span class="smaller">in optional </span></dt>
-              <dd class="small"><p>      Passed unchanged to contour.
-</p>
-
-<p></p>
-
-</dd>
-              
-            </dl>
-          
-
-          
-          <h3>Keywords</h3>
-            <dl>
-              
-              <dt id="pp_contour_paths:k:_ref_extra">_ref_extra <span class="smaller">in out optional </span></dt>
-              <dd class="small"><p>      Passed unchanged to/from contour.
-</p>
-
-<p></p>
-
-</dd>
-              
-            </dl>
-          
-
           
 
           
@@ -338,8 +367,10 @@
             <dl class="attribute small" summary="Routine author information">
               
                 <dt>Author:</dt>
-                <dd><p>Paulo Penteado (pp.penteado@gmail.com), Aug/2010
+                <dd><p>Paulo Penteado (pp.penteado@gmail.com), Mar/2014
 </p>
+
+<p></p>
 
 </dd>
               
@@ -348,6 +379,14 @@
 
               
 
+              
+                <dt>Version:</dt>
+                <dd><p>20140318
+</p>
+
+<p></p>
+
+</dd>
               
             </dl>
           
@@ -362,7 +401,7 @@
 
               
                 <dt>Requires:</dt>
-                <dd><p>IDL 8.0 or higher, for the lists and empty arrays.
+                <dd><p>IDL 8.0
 </p>
 
 <p></p>
@@ -388,12 +427,161 @@
             <table class="attribute small" summary="Routine statistics">
               <tr>
                 <td class="name">Lines:</td>
-                <td><div class="box green"></div>           12 lines</td>
+                <td><div class="box green"></div>           11 lines</td>
               </tr>
 
               <tr>
                 <td class="name">McCabe complexity:</td>
-                <td><div class="box green"></div>            3</td>
+                <td><div class="box green"></div>            1</td>
+              </tr>
+            </table>
+          
+
+        </div>
+        
+        <div class="routine-details details" id="pp_ilegendeditor::changeproperty">
+          <h2 class="routine-name"><a href="#root" class="top">top</a> <a href="pp_ilegendedit-code.html#pp_ilegendeditor::changeproperty:source" class="top">source</a> pp_ilegendeditor::changeproperty<span class="routine-attributes"></span></h2>
+
+          
+
+          <p class="syntax"><code>pp_ilegendeditor::changeproperty<span class="argument">, <a href="#pp_ilegendeditor::changeproperty:p:legend">legend</a></span><span class="argument">, <a href="#pp_ilegendeditor::changeproperty:k:hidebox">hidebox</a>=<span class="var">hidebox</span></span></code></p>
+
+          
+
+          
+
+          
+          <h3>Parameters</h3>
+            <dl>
+              
+              <dt id="pp_ilegendeditor::changeproperty:p:legend">legend <span class="smaller"></span></dt>
+              <dd class="small"></dd>
+              
+            </dl>
+          
+
+          
+          <h3>Keywords</h3>
+            <dl>
+              
+              <dt id="pp_ilegendeditor::changeproperty:k:hidebox">hidebox <span class="smaller"></span></dt>
+              <dd class="small"></dd>
+              
+            </dl>
+          
+
+          
+
+          
+
+          
+
+          
+          <h3>Statistics</h3>
+
+            <table class="attribute small" summary="Routine statistics">
+              <tr>
+                <td class="name">Lines:</td>
+                <td><div class="box green"></div>           11 lines</td>
+              </tr>
+
+              <tr>
+                <td class="name">McCabe complexity:</td>
+                <td><div class="box green"></div>            2</td>
+              </tr>
+            </table>
+          
+
+        </div>
+        
+        <div class="routine-details details" id="pp_ilegendeditor__define">
+          <h2 class="routine-name"><a href="#root" class="top">top</a> <a href="pp_ilegendedit-code.html#pp_ilegendeditor__define:source" class="top">source</a> pp_ilegendeditor__define<span class="routine-attributes"></span></h2>
+
+          
+
+          <p class="syntax"><code>pp_ilegendeditor__define</code></p>
+
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          <h3>Statistics</h3>
+
+            <table class="attribute small" summary="Routine statistics">
+              <tr>
+                <td class="name">Lines:</td>
+                <td><div class="box green"></div>            4 lines</td>
+              </tr>
+
+              <tr>
+                <td class="name">McCabe complexity:</td>
+                <td><div class="box green"></div>            1</td>
+              </tr>
+            </table>
+          
+
+        </div>
+        
+        <div class="routine-details details" id="pp_ilegendedit">
+          <h2 class="routine-name"><a href="#root" class="top">top</a> <a href="pp_ilegendedit-code.html#pp_ilegendedit:source" class="top">source</a> pp_ilegendedit<span class="routine-attributes"></span></h2>
+
+          
+
+          <p class="syntax"><code>pp_ilegendedit<span class="argument">, <a href="#pp_ilegendedit:p:legend">legend</a></span><span class="argument">, <a href="#pp_ilegendedit:k:_ref_extra">_ref_extra</a>=<span class="var">_ref_extra</span></span></code></p>
+
+          
+
+          
+
+          
+          <h3>Parameters</h3>
+            <dl>
+              
+              <dt id="pp_ilegendedit:p:legend">legend <span class="smaller"></span></dt>
+              <dd class="small"></dd>
+              
+            </dl>
+          
+
+          
+          <h3>Keywords</h3>
+            <dl>
+              
+              <dt id="pp_ilegendedit:k:_ref_extra">_ref_extra <span class="smaller"></span></dt>
+              <dd class="small"></dd>
+              
+            </dl>
+          
+
+          
+
+          
+
+          
+
+          
+          <h3>Statistics</h3>
+
+            <table class="attribute small" summary="Routine statistics">
+              <tr>
+                <td class="name">Lines:</td>
+                <td><div class="box green"></div>            5 lines</td>
+              </tr>
+
+              <tr>
+                <td class="name">McCabe complexity:</td>
+                <td><div class="box green"></div>            1</td>
               </tr>
             </table>
           
@@ -410,12 +598,12 @@
         <table class="attribute small" summary="File attributes">
           <tr>
             <td class="name">Modification date:</td>
-            <td>Thu Jan 31 21:29:45 2013</td>
+            <td>Tue Mar 18 13:03:24 2014</td>
           </tr>
 
           <tr>
             <td class="name">Lines:</td>
-            <td>38</td>
+            <td>71</td>
           </tr>
 
           
@@ -434,7 +622,7 @@
     
       <table class="smaller" summary="footer">
         <tr>
-          <td class="left">Produced by IDLdoc 3.6.0alpha on Tue Mar 18 13:05:04 2014</td>
+          <td class="left">Produced by IDLdoc 3.6.0alpha on Tue Mar 18 13:05:05 2014</td>
           <td class="right"><a target="_top" href="http://idldoc.idldev.com">IDLdoc project information</a></td>
         </tr>
       </table>
