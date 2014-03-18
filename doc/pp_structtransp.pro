@@ -45,6 +45,12 @@ names=tag_names(strin)
 ret=!null
 for i=0,n_elements(names)-1 do ret=create_struct(ret,names[i],(strin.(i))[0])
 ret=replicate(ret,n_elements(strin.(0)))
-for i=0,n_elements(names)-1 do ret[*].(i)=strin.(i)
+for i=0,n_elements(names)-1 do begin
+  catch,err 
+  if err then begin
+    catch,/cancel
+    ret[*].(i)=strin.(i).toarray()
+  endif else ret[*].(i)=strin.(i)
+endfor
 return,ret
 end

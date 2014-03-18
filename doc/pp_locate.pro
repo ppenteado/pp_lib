@@ -73,25 +73,26 @@
 ;-
 function pp_locate,array,histogram=hh,$
   unique_values=uarray,sorted_values=sarray,no_sort=no_sort,unique_indices=auinds,$
-  sort_indices=s,reverse_sort=sr
+  sort_indices=s,reverse_sort=sr,use_pointers=use_pointers
 compile_opt idl2,logical_predicate
 
 mhh=arg_present(hh)
 
-ret=hash()
+use_pointers=n_elements(use_pointers) ? use_pointers : 0B
+
 if mhh then hh=hash()
 
 if n_elements(array) eq 0 then return,ret ;Get out if array is empty
 
 if keyword_set(no_sort) then begin ;Sort if needed
   sarray=array
-  s=ul64indgen(n_elements(array))
+  s=l64indgen(n_elements(array))
 endif else begin
   s=sort(array)
   sarray=array[s]
 endelse
 
-sr=(ul64indgen(n_elements(array)))[s] ;sr maps sarray back into array: sarray=array[s] and array=sarray[sr]
+sr=(l64indgen(n_elements(array)))[s] ;sr maps sarray back into array: sarray=array[s] and array=sarray[sr]
 
 ;Find unique values in the array
 uinds=uniq(sarray)
@@ -99,11 +100,12 @@ uarray=sarray[uinds]
 auinds=s[uinds]
 
 last=0ULL
+ret=use_pointers ? {keys:uarray,values:ptrarr(n_elements(uarray))} : hash()
 foreach el,uinds,i do begin
   nels=el-last+1
   if mhh then hh.set,uarray[i],nels
-  els=sr[last+ul64indgen(nels)]
-  ret.set,uarray[i],els
+  els=sr[last+l64indgen(nels)]
+  if use_pointers then ret.values[i]=ptr_new(els) else ret.set,uarray[i],els
   last=el+1
 endforeach
 
