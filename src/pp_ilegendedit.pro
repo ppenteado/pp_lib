@@ -35,6 +35,8 @@
 ; :Author: Paulo Penteado (pp.penteado@gmail.com), Mar/2014
 ;
 ;-
+
+
 function pp_ilegendeditor::init
 compile_opt idl2,logical_predicate,hidden
 !null=igetcurrent(tool=ot)
