@@ -102,7 +102,7 @@ auinds=s[uinds]
 
 last=0ULL
 ret=use_pointers ? {keys:uarray,values:ptrarr(n_elements(uarray))} : hash()
-if make_counts then counts=use_pointers ? {keys:uarray,values:0LL)} : hash()
+if make_counts then counts=use_pointers ? {keys:uarray,values:0LL} : hash()
 foreach el,uinds,i do begin
   nels=el-last+1
   if mhh then hh.set,uarray[i],nels
