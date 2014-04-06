@@ -73,12 +73,13 @@
 ;-
 function pp_locate,array,histogram=hh,$
   unique_values=uarray,sorted_values=sarray,no_sort=no_sort,unique_indices=auinds,$
-  sort_indices=s,reverse_sort=sr,use_pointers=use_pointers
+  sort_indices=s,reverse_sort=sr,use_pointers=use_pointers,counts=counts
 compile_opt idl2,logical_predicate
 
 mhh=arg_present(hh)
 
 use_pointers=n_elements(use_pointers) ? use_pointers : 0B
+make_counts=arg_present(counts)
 
 if mhh then hh=hash()
 
@@ -101,11 +102,15 @@ auinds=s[uinds]
 
 last=0ULL
 ret=use_pointers ? {keys:uarray,values:ptrarr(n_elements(uarray))} : hash()
+if make_counts then counts=use_pointers ? {keys:uarray,values:0LL)} : hash()
 foreach el,uinds,i do begin
   nels=el-last+1
   if mhh then hh.set,uarray[i],nels
   els=sr[last+l64indgen(nels)]
   if use_pointers then ret.values[i]=ptr_new(els) else ret.set,uarray[i],els
+  if make_counts then begin
+    if use_pointers then counts.values[i]=n_elements(els) else counts.set,uarray[i],n_elements(els)
+  endif
   last=el+1
 endforeach
 
