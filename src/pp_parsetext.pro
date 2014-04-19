@@ -4,6 +4,7 @@ delimiter=delimiter,stripquotes=stripquotes
 compile_opt idl2,logical_predicate
 trim=n_elements(trim) ? trim : 2
 spacedelimited=keyword_set(spacedelimited)
+stripquotes=keyword_set(stripquotes)
 lines=pp_readtxt(file)
 if keyword_set(skipblank) then begin
   lines=lines[where(strtrim(lines,2) ne '',/null)]
@@ -13,12 +14,16 @@ lines=lines[1:-1]
 s=strsplit(header)
 e=[s[1:-1],max(strlen(lines))]
 l=e-s
-fieldnames=idl_validname(strsplit(header,/extract),/convert_all)
+fn=n_elements(delimiter) ? strsplit(header,delimiter,/extract) : strsplit(header,/extract)
+
 liness=spacedelimited ? transpose((strsplit(lines,/extract)).toarray()) : ( n_elements(delimiter) ? transpose((strsplit(lines,delimiter,/extract)).toarray()) : strmid(lines,s,l))
-if keyword_set(stripquotes) then begin
+if stripquotes then begin
   w=where(stregex(liness,'"(.*)"',/boolean),count)
   if count then liness[w]=(stregex(liness[w],'"(.*)"',/subexpr,/extract))[-1,*]
+  w=where(stregex(fieldnames,'"(.*)"',/boolean),count)
+  if count then fieldnames[w]=(stregex(fieldnames[w],'"(.*)"',/subexpr,/extract))[-1,*]
 endif
+fieldnames=idl_validname(fn,/convert_all)
 if trim then liness=strtrim(liness,trim)
 if keyword_set(as_struct) then begin
   ret={}
