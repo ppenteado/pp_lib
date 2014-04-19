@@ -20,8 +20,8 @@ liness=spacedelimited ? transpose((strsplit(lines,/extract)).toarray()) : ( n_el
 if stripquotes then begin
   w=where(stregex(liness,'"(.*)"',/boolean),count)
   if count then liness[w]=(stregex(liness[w],'"(.*)"',/subexpr,/extract))[-1,*]
-  w=where(stregex(fieldnames,'"(.*)"',/boolean),count)
-  if count then fieldnames[w]=(stregex(fieldnames[w],'"(.*)"',/subexpr,/extract))[-1,*]
+  w=where(stregex(fn,'"(.*)"',/boolean),count)
+  if count then fn[w]=(stregex(fn[w],'"(.*)"',/subexpr,/extract))[-1,*]
 endif
 fieldnames=idl_validname(fn,/convert_all)
 if trim then liness=strtrim(liness,trim)
