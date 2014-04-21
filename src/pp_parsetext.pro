@@ -1,10 +1,15 @@
 function pp_parsetext,file,header=header,lines=lines,splitlines=liness,as_struct=as_struct,$
 fieldnames=fieldnames,types=types,trim=trim,spacedelimited=spacedelimited,skipblank=skipblank,$
-delimiter=delimiter,stripquotes=stripquotes
+delimiter=delimiter,stripquotes=stripquotes,isinteger=isinteger,isfloat=isfloat,$
+missingint=missingint,missingfloat=missingfloat,blank=blank
 compile_opt idl2,logical_predicate
 trim=n_elements(trim) ? trim : 2
 spacedelimited=keyword_set(spacedelimited)
 stripquotes=keyword_set(stripquotes)
+replaceints=n_elements(missingint)
+replacefloats=n_elements(missingfloat)
+blank=keyword_set(blank)
+
 lines=pp_readtxt(file)
 if keyword_set(skipblank) then begin
   lines=lines[where(strtrim(lines,2) ne '',/null)]
@@ -25,13 +30,27 @@ if stripquotes then begin
 endif
 fieldnames=idl_validname(fn,/convert_all)
 if trim then liness=strtrim(liness,trim)
+isinteger=arg_present(isinteger) ? list() : !null
+isfloat=arg_present(isfloat) ? list() : !null
 if keyword_set(as_struct) then begin
   ret={}
   typeh=n_elements(types) ? types[*] : hash()
   foreach field,fieldnames,ifield do begin
     if ~typeh.haskey(field) then begin
-      isint=array_equal(minmax(pp_isnumber(liness[ifield,*],/integer)),[1,1])
-      isdouble=array_equal(minmax(pp_isnumber(liness[ifield,*],/nan,/infinity)),[1,1])
+      tmpi=reform(pp_isnumber(liness[ifield,*],/integer,blank=(blank or replaceints)))
+      if replaceints then begin
+        wi=where(liness[ifield,*] eq '',counti)
+        liness[ifield,wi]=missingint
+      endif
+      if isinteger ne !null then isinteger.add,tmpi
+      isint=array_equal(minmax(tmpi),[1,1])
+      tmpf=reform(pp_isnumber(liness[ifield,*],/nan,/infinity,blank=(blank or replacefloats)))
+      if replacefloats then begin
+        wf=where(liness[ifield,*] eq '',countf)
+        liness[ifield,wf]=missingfloat
+      endif
+      if isfloat ne !null then isfloat.add,tmpf
+      isdouble=array_equal(minmax(tmpf),[1,1])
       case 1 of
         isint: typeh[field]=0LL
         isdouble: typeh[field]=0d0
