@@ -8,7 +8,8 @@
 ; :Returns:
 ;   True if str is a floating point number, or (optionally), NaN or Infinity.
 ;   
-;   False otherwise, including if str is undefined or is blank.
+;   False otherwise, including if str is undefined or is blank (unless the
+;   keyword blank is set).
 ;
 ; :Params:
 ;    istr : in, required
@@ -25,6 +26,8 @@
 ;      to strtrim).
 ;    integer : in, optional, default=0
 ;      If set, will test for integer numbers, instead of real numbers.
+;    blank : in,optional, default=0
+;      If set, blanks are allowed as numbers 
 ;      
 ; :Uses:
 ; 
@@ -42,7 +45,7 @@
 ;
 ; :Author: Paulo Penteado (pp.penteado@gmail.com), Aug/2009
 ;-
-function pp_isnumber,istr,nan=nan,infinity=infinity,trim=trim,integer=integer
+function pp_isnumber,istr,nan=nan,infinity=infinity,trim=trim,integer=integer,blank=blank
 compile_opt idl2, logical_predicate
 ;
 ;Defaults
@@ -50,16 +53,20 @@ nan=n_elements(nan) eq 1 ? nan : 1B
 infinity=n_elements(infinity) eq 1 ? infinity : 1B
 trim=n_elements(trim) eq 1 ? trim : 1B
 integer=n_elements(integer) eq 1 ? integer : 0B
+blank=n_elements(blank) eq 1 ? blank : 0B
 
 nstr=n_elements(istr)
 if (nstr eq 0) then return,0
 str=trim ? strtrim(istr,2) : istr
 
+if (blank) then begin
+  bl=strlen(str) eq 0
+endif
 if (integer) then begin ;Test for integer
   ;Regular expression to determine if something is an integer number
   intexpr='^[-+]?([0-9]+)$'
   ;Test for integer
-  res=stregex(str,intexpr,/boolean)    
+  res=stregex(str,intexpr,/boolean)
 endif else begin ;Test for floating point number
   ;Regular expression to determine if something is a floating point number
   fpexpr='^[-+]?(([0-9]*\.?[0-9]+)|([0-9]+\.?[0-9]*))([eEdD][-+]?[0-9]+)?$'
@@ -74,5 +81,6 @@ endif else begin ;Test for floating point number
   ;Test for Infinity
   res=byte(res or (replicate(infinity,nstr) and stregex(str,infexpr,/boolean,/fold_case)))
 endelse
+if blank then res=res or bl
 return,res
 end

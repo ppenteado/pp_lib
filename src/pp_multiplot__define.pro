@@ -238,7 +238,7 @@ if (n_elements(gytitle) eq 1) then self.setproperty,global_ytitle=gytitle
 if (n_elements(gtitle) ne 0) then self.setproperty,title=gtitle
 
 
-return,isa(self.owindow,'graphicswin')
+return,isa(self.owindow,'graphicswin') || isa(self.owindow,'graphicsbuffer')
 end
 
 
