@@ -39,6 +39,8 @@
 ;      By default, returned times of day (for transit, rise and set) are relative to local midnight, so times before
 ;      midnight are negative. If this keyword is set, times before midnight are returned as the time for the previous day,
 ;      instead.
+;    extra : in, optional, default=0
+;      If set, extra data is output (sunrise/sunset times, target altitude at sunrise/sunet, etc).
 ;      
 ; :Examples:
 ; 
@@ -60,10 +62,12 @@
 ;
 ; :Author: Paulo Penteado (pp.penteado@gmail.com), Jun/2010
 ;-
-function pp_rise_set,ra,dec,obsname=obsname,lat=lat,lon=lon,tz=tz,day=day,month=month,year=year,prev_day=prev
-compile_opt idl2
+function pp_rise_set,ra,dec,obsname=obsname,lat=lat,lon=lon,tz=tz,day=day,$
+  month=month,year=year,prev_day=prev,extra=extra
+compile_opt idl2,logical_predicate
 
 ;Defaults
+extra=keyword_set(extra)
 prev=n_elements(prev) eq 1 ? prev : 0
 if (n_elements(day) ne 1) || (n_elements(month) ne 1) || (n_elements(year) ne 1) then $
  message,'Time must be provided by day,month,year'
@@ -120,7 +124,25 @@ if (prev) then begin
   transit_civ=(transit_civ+24d0) mod 24
 endif
 
+if extra then begin
+  jd=julday(month,day,year)
+  sunpos,jd,sunra,sundec
+  sunra/=15d0
+  sun=pp_rise_set(sunra,sundec,obsname=obsname,lat=lat,lon=lon,tz=tz,day=day,$
+    month=month,year=year,prev_day=prev)
+  sun=create_struct(sun,'ra',sunra,'dec',sundec)
+  eq2hor,ra,dec,jd+(sun.rise+tz)/24d0,altr,azr,lat=lat,lon=lon
+  eq2hor,ra,dec,jd+(sun.set+tz)/24d0,alts,azs,lat=lat,lon=lon
+  target_nosun={sunset_alt:alts,sunrise_alt:altr};,no_sun_hours:hours}
+endif
 ;Pack the results
-return,{transit:transit_civ,sky:sky,rise:rise,set:set}
+ret={transit:transit_civ,sky:sky,rise:rise,set:set}
+
+if extra then begin
+  ret=create_struct(ret,'jd',jd,'sun',sun,'target',target_nosun)
+
+endif
+
+return,ret
 
 end

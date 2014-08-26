@@ -39,6 +39,8 @@
 ;      By default, returned times of day (for transit, rise and set) are relative to local midnight, so times before
 ;      midnight are negative. If this keyword is set, times before midnight are returned as the time for the previous day,
 ;      instead.
+;    extra : in, optional, default=0
+;      If set, extra data is output (sunrise/sunset times, target altitude at sunrise/sunet, etc).
 ;      
 ; :Examples:
 ; 
