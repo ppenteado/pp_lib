@@ -131,15 +131,18 @@ if extra then begin
   sun=pp_rise_set(sunra,sundec,obsname=obsname,lat=lat,lon=lon,tz=tz,day=day,$
     month=month,year=year,prev_day=prev)
   sun=create_struct(sun,'ra',sunra,'dec',sundec)
-  eq2hor,ra,dec,jd+(sun.rise+tz)/24d0,altr,azr,lat=lat,lon=lon
-  eq2hor,ra,dec,jd+(sun.set+tz)/24d0,alts,azs,lat=lat,lon=lon
+  eq2hor,ra*15d0,dec,jd+(sun.rise+tz+12d0)/24d0,altr,azr,lat=lat,lon=lon
+  eq2hor,ra*15d0,dec,jd+(sun.set+tz+12d0)/24d0,alts,azs,lat=lat,lon=lon
   target_nosun={sunset_alt:alts,sunrise_alt:altr};,no_sun_hours:hours}
 endif
 ;Pack the results
 ret={transit:transit_civ,sky:sky,rise:rise,set:set}
 
+
 if extra then begin
-  ret=create_struct(ret,'jd',jd,'sun',sun,'target',target_nosun)
+  if n_elements(obsname) eq 0 then obsname=''
+  ret=create_struct(ret,'jd',jd,'sun',sun,'target',target_nosun,'month',$
+    month,'day',day,'year',year,'ra',ra,'dec',dec,'obsname',obsname,'lat',lat,'lon',lon,'tz',tz)
 
 endif
 
