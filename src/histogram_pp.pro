@@ -72,7 +72,7 @@ if arg_present(rl) then begin
   foreach el,h,i do if (el gt 0L) then rl[i]=ri[ri[i]:ri[i+1]-1]
 endif
 if arg_present(rh) then begin
-  rh=hash(locations)
+  rh=!version.release ge '8.3' ? orderedhash(locations) : hash(locations)
   foreach el,h,i do if (el gt 0L) then rh[locations[i]]=ri[ri[i]:ri[i+1]-1]
 endif 
 return,h

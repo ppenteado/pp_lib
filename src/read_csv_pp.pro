@@ -15,6 +15,12 @@
 ; :Params:
 ;    filename: in, required, type=string
 ;      The name of the CSV file to read.
+;    blank: in, optional, default=0
+;      If set, blank (empty / whitespace) strings are allowed in numeric columns: if a column
+;       contains numbers and blank values, its type will be numeric, and any blanks will be replaced
+;       with 0. When not set (default), a column containing blanks will be returned as strings.
+;       Note that, due to the way the original read_csv operates, a colum consisting entirely of blanks
+;       will be returned a string column.  
 ;
 ; :Keywords:
 ;    _ref_extra: in, out, optional
@@ -41,9 +47,9 @@
 ;
 ; :Author: Paulo Penteado (`http://www.ppenteado.net <http://www.ppenteado.net>`), Feb/2013
 ;-
-function read_csv_pp,filename,header=header,_ref_extra=ex,field_names=fn
+function read_csv_pp,filename,header=header,_ref_extra=ex,field_names=fn,blank=blank
 compile_opt idl2,logical_predicate
-c=read_csv_pp_strings(filename,_strict_extra=ex,header=header)
+c=read_csv_pp_strings(filename,_strict_extra=ex,header=header,blank=blank)
 if (n_elements(header) ne n_tags(c)) || (strtrim(strjoin(header),2) eq '') then begin
   header=strarr(n_tags(c))
   foreach el,tag_names(c),i do header[i]=(c.(i))[0]

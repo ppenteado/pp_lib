@@ -97,7 +97,7 @@ function read_csv_pp_strings, Filename, $
   _EXTRA=_extra,$  ; needed for iOpen
   ;New parameters, by Paulo Penteado (http://www.ppenteado.net):
   types=types,$ ;if provided, assume these types codes for the columns, instead of trying to determine
-  nan=nan,infinity=infinity,integer=integer,trim=trim,$ ;passed to pp_isnumber when testing columns
+  nan=nan,infinity=infinity,integer=integer,trim=trim,blank=blank,$ ;passed to pp_isnumber when testing columns
   rows_for_testing=rows_for_testing ;Maximum number of rows to use when testing columns for data types.
                                     ;Set to zero to test all rows
   
@@ -247,7 +247,7 @@ function read_csv_pp_strings, Filename, $
         tmpLong64 = LONG64(subdata)
         tmpLong = LONG(subdata)
         hasDecimal = MAX(STRPOS(subdata, '.')) ge 0
-        isnumber=total(pp_isnumber(subdata,nan=nan,infinity=infinity,integer=integer,trim=trim)) eq n_elements(subdata)
+        isnumber=total(pp_isnumber(subdata,nan=nan,infinity=infinity,integer=integer,trim=trim,blank=blank)) eq n_elements(subdata)
         if ~isnumber then continue
   
         if (hasDecimal || ~ARRAY_EQUAL(tmpLong64, tmpDouble)) then begin
