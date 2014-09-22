@@ -14,13 +14,7 @@
 ;
 ; :Params:
 ;    filename: in, required, type=string
-;      The name of the CSV file to read.
-;    blank: in, optional
-;      If set, blank (empty / whitespace) strings are allowed in numeric columns: if a column
-;       contains numbers and blank values, its type will be numeric, and any blanks will be replaced
-;       with 0. When not set (default), a column containing blanks will be returned as strings.
-;       Note that, due to the way the original read_csv operates, a colum consisting entirely of blanks
-;       will be returned a string column.  
+;      The name of the CSV file to read. 
 ;
 ; :Keywords:
 ;    _ref_extra: in, out, optional
@@ -28,6 +22,12 @@
 ;    field_names: in, optional, type=strarr(nfields)
 ;      A string array with the name to assign to each field (column) in the output. If provided, this
 ;      overrides the auto column names derived from the csv header line.
+;    blank: in, optional, default=0
+;      If set, blank (empty / whitespace) strings are allowed in numeric columns: if a column
+;       contains numbers and blank values, its type will be numeric, and any blanks will be replaced
+;       with 0. When not set (default), a column containing blanks will be returned as strings.
+;       Note that, due to the way the original read_csv operates, a colum consisting entirely of blanks
+;       will be returned a string column.
 ;      
 ; :Examples:
 ;    To read IDL's example csv file::
