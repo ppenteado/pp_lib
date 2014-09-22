@@ -15,7 +15,7 @@
 ; :Params:
 ;    filename: in, required, type=string
 ;      The name of the CSV file to read.
-;    blank: in, optional, default=0
+;    blank: in, optional
 ;      If set, blank (empty / whitespace) strings are allowed in numeric columns: if a column
 ;       contains numbers and blank values, its type will be numeric, and any blanks will be replaced
 ;       with 0. When not set (default), a column containing blanks will be returned as strings.
