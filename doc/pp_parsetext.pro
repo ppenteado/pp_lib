@@ -1,7 +1,7 @@
 function pp_parsetext,file,header=header,lines=lines,splitlines=liness,as_struct=as_struct,$
 fieldnames=fieldnames,types=types,trim=trim,spacedelimited=spacedelimited,skipblank=skipblank,$
 delimiter=delimiter,stripquotes=stripquotes,isinteger=isinteger,isfloat=isfloat,$
-missingint=missingint,missingfloat=missingfloat,blank=blank
+missingint=missingint,missingfloat=missingfloat,blank=blank,buffer=buffer
 compile_opt idl2,logical_predicate
 trim=n_elements(trim) ? trim : 2
 spacedelimited=keyword_set(spacedelimited)
@@ -9,8 +9,9 @@ stripquotes=keyword_set(stripquotes)
 replaceints=n_elements(missingint)
 replacefloats=n_elements(missingfloat)
 blank=keyword_set(blank)
+buffer=keyword_set(buffer)
 
-lines=pp_readtxt(file)
+if buffer then lines=file else lines=pp_readtxt(file)
 if keyword_set(skipblank) then begin
   lines=lines[where(strtrim(lines,2) ne '',/null)]
 endif

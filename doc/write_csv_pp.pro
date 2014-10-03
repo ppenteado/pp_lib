@@ -58,9 +58,10 @@
   ;-
 pro write_csv_pp,file,data1,data2,data3,data4,data5,data6,data7,data8,titlesfromfields=tf,_ref_extra=ex
 compile_opt idl2,logical_predicate
-data0=data1 eq !null ? !null : pp_struct_unravel(data1)
+u=pp_struct_unravel(data1,/testonly)
+if u then data0=pp_struct_unravel(data1)
 if keyword_set(tf) then begin 
-  header=tag_names(data0)
-  write_csv,file,data0,data2,data3,data4,data5,data6,data7,data8,_strict_extra=ex,header=header
-endif else write_csv,file,data0,data2,data3,data4,data5,data6,data7,data8,_strict_extra=ex
+  header=tag_names(u ? data0 : data1)
+  write_csv,file,(u ? data0 : data1),data2,data3,data4,data5,data6,data7,data8,_strict_extra=ex,header=header
+endif else write_csv,file,(u ? data0 : data1),data2,data3,data4,data5,data6,data7,data8,_strict_extra=ex
 end

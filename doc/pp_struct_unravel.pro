@@ -16,6 +16,13 @@
 ;    str: in, required
 ;      The structure to be flattened. See example below.
 ;      
+; :Keywords:
+;    testonly: in, optional, default=0
+;      If set, instead of returning a copy of the structure, only a test is performed, to determine
+;      whether the given variable is a nested structure. This is useful when the structure is large: upon
+;      determining that the structure is not nested, the user might decide to use the original structure,
+;      instead of the output of pp_struct_unravel (which would just be a copy of the original structure).
+;      
 ; :Examples:
 ; 
 ;   Define a nested structure and then flatten it::
@@ -39,19 +46,22 @@
 ;
 ; :Author: Paulo Penteado (`http://www.ppenteado.net <http://www.ppenteado.net>`), Feb/2013
 ;-
-function pp_struct_unravel,str
+function pp_struct_unravel,str,testonly=testonly
 compile_opt idl2,logical_predicate
-if size(str,/tname) ne 'STRUCT' then return,str
+testonly=keyword_set(testonly)
+if size(str,/tname) ne 'STRUCT' then return,testonly ? 0 : str
 tn=tag_names(str)
 nt=n_elements(tn)
 tnames=strarr(nt)
 for i=0,nt-1 do tnames[i]=size(str.(i),/tname)
 w=where(tnames eq 'STRUCT',count)
-if ~count then return,str else begin
-  ret={}
+if ~count then return,(testonly ? 0 : str)
+
+  ret=testonly ? 0 : {}
   for i=0,nt-1 do if tnames[i] ne 'STRUCT' then begin
-    ret=create_struct(ret,tn[i],str.(i))
+    if ~testonly then ret=create_struct(ret,tn[i],str.(i))
   endif else begin
+    if testonly then return,1
     s=pp_struct_unravel(str.(i))
     tnf=tag_names(s)
     for j=0,n_elements(tnf)-1 do begin
@@ -59,5 +69,6 @@ if ~count then return,str else begin
     endfor
   endelse
   return,ret
-endelse
+  
+  
 end
