@@ -319,14 +319,16 @@ pro write_csv_pp,file,data1,data2,data3,data4,data5,data6,data7,data8,titlesfrom
   
   u=pp_struct_unravel(data1,/testonly)
   if u then data0=pp_struct_unravel(data1)
-  for i=0,nd-1 do begin
+  for i=0LL,nd-1 do begin
+    fr=i*blocksize
+    lr=((i+1LL)*blocksize-1)<(nrows-1LL)
     if keyword_set(verbose) then print,'write_csv_pp: writing file section ',strtrim(i+1,2),' of ',strtrim(nd,2)
     if keyword_set(tf) then begin
       header=tag_names(u ? data0 : data1)
-      write_csv_pp_original,file,(u ? data0[i*blocksize:((i+1)*blocksize-1)<(nrows-1)] : data1[i*blocksize:((i+1)*blocksize-1)<(nrows-1)]),$
+      write_csv_pp_original,file,(u ? data0[fr:lr] : data1[fr:lr]),$
         data2,data3,data4,data5,data6,data7,data8,_strict_extra=ex,header=(i eq 0 ? header : !null),append=i
     endif else begin
-      write_csv_pp_original,file,(u ? data0[i*blocksize:((i+1)*blocksize-1)<(nrows-1)] : data1[i*blocksize:((i+1)*blocksize-1)<(nrows-1)]),$
+      write_csv_pp_original,file,(u ? data0[fr:lr] : data1[fr:lr]),$
         data2,data3,data4,data5,data6,data7,data8,_strict_extra=ex,append=i
     endelse
   endfor
