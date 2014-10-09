@@ -326,10 +326,24 @@ pro write_csv_pp,file,data1,data2,data3,data4,data5,data6,data7,data8,titlesfrom
     if keyword_set(tf) then begin
       header=tag_names(u ? data0 : data1)
       write_csv_pp_original,file,(u ? data0[fr:lr] : data1[fr:lr]),$
-        data2,data3,data4,data5,data6,data7,data8,_strict_extra=ex,header=(i eq 0 ? header : !null),append=i
+        n_elements(data2) ? data2[fr:lr] : !null ,$
+        n_elements(data3) ? data3[fr:lr] : !null ,$
+        n_elements(data4) ? data4[fr:lr] : !null ,$
+        n_elements(data5) ? data5[fr:lr] : !null ,$
+        n_elements(data6) ? data6[fr:lr] : !null ,$
+        n_elements(data7) ? data7[fr:lr] : !null ,$
+        n_elements(data8) ? data8[fr:lr] : !null ,$
+        _strict_extra=ex,header=(i eq 0 ? header : !null),append=i
     endif else begin
       write_csv_pp_original,file,(u ? data0[fr:lr] : data1[fr:lr]),$
-        data2,data3,data4,data5,data6,data7,data8,_strict_extra=ex,append=i
+        n_elements(data2) ? data2[fr:lr] : !null ,$
+        n_elements(data3) ? data3[fr:lr] : !null ,$
+        n_elements(data4) ? data4[fr:lr] : !null ,$
+        n_elements(data5) ? data5[fr:lr] : !null ,$
+        n_elements(data6) ? data6[fr:lr] : !null ,$
+        n_elements(data7) ? data7[fr:lr] : !null ,$
+        n_elements(data8) ? data8[fr:lr] : !null ,$
+        _strict_extra=ex,append=i
     endelse
   endfor
 end
