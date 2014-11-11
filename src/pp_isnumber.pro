@@ -26,8 +26,11 @@
 ;      to strtrim).
 ;    integer : in, optional, default=0
 ;      If set, will test for integer numbers, instead of real numbers.
-;    blank : in,optional, default=0
-;      If set, blanks are allowed as numbers 
+;    blank : in, optional, default=0
+;      If set, blanks are allowed as numbers
+;    all : in, optional, default=0
+;      If set and the input is an array, pp_isnumber will return a single 0 or 1,
+;      indicating whether every element in the array passed the test.  
 ;      
 ; :Uses:
 ; 
@@ -45,7 +48,7 @@
 ;
 ; :Author: Paulo Penteado (pp.penteado@gmail.com), Aug/2009
 ;-
-function pp_isnumber,istr,nan=nan,infinity=infinity,trim=trim,integer=integer,blank=blank
+function pp_isnumber,istr,nan=nan,infinity=infinity,trim=trim,integer=integer,blank=blank,all=all
 compile_opt idl2, logical_predicate
 ;
 ;Defaults
@@ -82,5 +85,6 @@ endif else begin ;Test for floating point number
   res=byte(res or (replicate(infinity,nstr) and stregex(str,infexpr,/boolean,/fold_case)))
 endelse
 if blank then res=res or bl
+if keyword_set(all) then res=array_equal(res,1)
 return,res
 end
