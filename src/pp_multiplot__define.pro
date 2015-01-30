@@ -174,7 +174,8 @@
 ;-
 function pp_multiplot::init,_REF_EXTRA=ex,$
  multi_layout=mlayout,title=gtitle,global_xtitle=gxtitle,global_ytitle=gytitle,$
- global_margin=gmargin,columnwidths=cwidths,lineheights=lheights,absolute_dims=absolute
+ global_margin=gmargin,columnwidths=cwidths,lineheights=lheights,absolute_dims=absolute,$
+ xgap=xgap,ygap=ygap,xsupressdivision=xsupressdivision,ysupressdivision=ysupressdivision
 compile_opt idl2, logical_predicate
 
 if (n_elements(mlayout) ne 2) then begin
@@ -219,6 +220,8 @@ self.global_margin=[0.125d0,0.15d0,0.005d0,0.1d0]
 if (n_elements(gmargin) eq 4) then self.global_margin=gmargin
 if (n_elements(xranges) ne 0) then self.setproperty,xranges=xranges
 if (n_elements(yranges) ne 0) then self.setproperty,yranges=yranges
+if (n_elements(ygap) ne 0) then self.ygap=ygap
+if (n_elements(xgap) ne 0) then self.xgap=xgap
 
 ;Create the window to contain the graphics
 if absolute then begin
@@ -236,6 +239,8 @@ endif else self.owindow=window(_extra=ex,title=gtitle)
 if (n_elements(gxtitle) eq 1) then self.setproperty,global_xtitle=gxtitle
 if (n_elements(gytitle) eq 1) then self.setproperty,global_ytitle=gytitle
 if (n_elements(gtitle) ne 0) then self.setproperty,title=gtitle
+if (n_elements(xsupressdivision) ne 0) then self.xsupressdivision=xsupressdivision
+if (n_elements(ysupressdivision) ne 0) then self.ysupressdivision=ysupressdivision
 
 
 return,isa(self.owindow,'graphicswin') || isa(self.owindow,'graphicsbuffer')
@@ -684,6 +689,17 @@ self.setendticks,yendticks,ret,'y'
 (self.yendticks)[mindex]=yendticks
 ;Change the default grid index to the next one 
 if mindex lt (self.mlayout[0]*self.mlayout[1]-1) then self.mindex++
+
+if self.xsupressdivision then begin
+  if ~left then ret['axis1'].hide=1
+  if ~right then ret['axis3'].hide=1
+endif
+
+if self.ysupressdivision then begin
+  if ~bottom then ret['axis0'].hide=1
+  if ~top then ret['axis2'].hide=1
+endif
+
 return,ret
 end
 
@@ -1007,7 +1023,8 @@ fullwidth=1d0-self.global_margin[0]-self.global_margin[2]
 fullheight=1d0-self.global_margin[1]-self.global_margin[3]
 shiftsx=(self.global_margin[0]+[0d0,total(self.cwidths.toarray(),/cumulative)])*fullwidth
 shiftsy=(self.global_margin[1]+1d0-[0d0,total(self.lheights.toarray(),/cumulative)])*fullheight
-return,[shiftsx[column],shiftsy[line+1],shiftsx[column+1],shiftsy[line]]
+return,[shiftsx[column]+(left ? 0d0 : self.xgap/2d0),shiftsy[line+1]+(bottom ? 0d0 : self.ygap/2d0),$
+  shiftsx[column+1]-(right ? 0d0 : self.xgap/2d0),shiftsy[line]-(top ? 0d0 : self.ygap/2d0)]
 
 end
 
@@ -1084,7 +1101,8 @@ pro pp_multiplot::getproperty,_ref_extra=ex,$
  multi_layout=mlayout,global_xtitle=gxtitle,global_ytitle=gytitle,$
  global_margin=gmargin,window=owindow,$
  title=otitle,xranges=xranges,yranges=yranges,$
- xproperties=xproperties,yproperties=yproperties,xendticks=xendticks,yendticks=yendticks
+ xproperties=xproperties,yproperties=yproperties,xendticks=xendticks,yendticks=yendticks,$
+ xgap=xgap,ygap=ygap
 compile_opt idl2, logical_predicate
 if arg_present(gxtitle) then gxtitle=self.global_xtitle
 if arg_present(gytitle) then gytitle=self.global_ytitle
@@ -1098,6 +1116,8 @@ if arg_present(yendticks) then yendticks=(self.yendticks)[*]
 ;Return only the x/y properties that have been set
 if arg_present(xproperties) then xproperties=(self.xproperties)[where(self.xproperties ne !null)]
 if arg_present(yproperties) then yproperties=(self.yproperties)[where(self.yproperties ne !null)]
+if arg_present(xgap) then xgap=self.xgap
+if arg_present(ygap) then ygap=self.ygap
 
 ;Filter and process the [x/y]properties from the extras
 extras=hash(ex)
@@ -1182,7 +1202,8 @@ end
 pro pp_multiplot::setproperty,_extra=ex,$
  global_xtitle=gxtitle,global_ytitle=gytitle,$
  title=title,xranges=xranges,yranges=yranges,$
- xproperties=xproperties,yproperties=yproperties,xendticks=xendticks,yendticks=yendticks
+ xproperties=xproperties,yproperties=yproperties,xendticks=xendticks,yendticks=yendticks,$
+ xgap=xgap,ygap=ygap
 compile_opt idl2, logical_predicate
 if (n_elements(gxtitle) ne 0) then begin ;Set the global x title
   if obj_valid(self.global_xtitle) then self.global_xtitle.string=gxtitle else begin
@@ -1434,5 +1455,7 @@ compile_opt idl2, logical_predicate
  mindex:0,$ ;Current position in the grid (0 to nlines*ncolumns)
  xranges:list(),yranges:list(),$ ;x/y ranges for each column/line in the grid
  xproperties:list(),yproperties:list(),$ ;x/y axes roperties for each column/line in the grid
- xendticks:list(),yendticks:list()} ;x/y endticks for each plot in the grid
+ xendticks:list(),yendticks:list(),$ ;x/y endticks for each plot in the grid
+ xgap:0d0,ygap:0d0,$ ;x/y gap between plots
+ xsupressdivision:0B,ysupressdivision:0B} ;Supress the lines between plots in x/y
 end

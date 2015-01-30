@@ -1,37 +1,36 @@
 \NeedsTeXFormat{LaTeX2e}[1994/06/01]
 
-% Modified from the tufte-common.sty
+% modified from the tufte-common.sty
 \ProvidesPackage{idldoc}[2009/01/01 v1.0.0 Common code for the idldoc style]
 
-%%
-% We use the `xifthen' package to handle our package option switches
+
+%% Handle options
+
+% we use the `xifthen' package to handle our package option switches
 \RequirePackage{xifthen}
 
-
-%%
 % `debug' option -- provides more information in the .log file for use in
 % troubleshooting problems
 \newboolean{@idldoc@debug}
 \DeclareOption{debug}{\setboolean{@idldoc@debug}{true}}
 
-%%
 % `nofonts' option -- doesn't load any fonts
 % `fonts' option -- tries to load fonts
 \newboolean{@idldoc@loadfonts}\setboolean{@idldoc@loadfonts}{true}
 \DeclareOption{fonts}{\setboolean{@idldoc@loadfonts}{true}}
 \DeclareOption{nofonts}{\setboolean{@idldoc@loadfonts}{false}}
 
-%%
 % `nols' option -- doesn't configure letterspacing
 % `ls' option -- configures letterspacing
 \newboolean{@idldoc@letterspace}\setboolean{@idldoc@letterspace}{true}
 \DeclareOption{ls}{\setboolean{@idldoc@letterspace}{true}}
 \DeclareOption{nols}{\setboolean{@idldoc@letterspace}{false}}
 
-%%
 % `book' and `handout' options
-\newcommand{\@idldoc@class}{article}% the base LaTeX class (defaults to the article/handout style)
-\newcommand{\@idldoc@pkgname}{idldoc}% the name of the package (defaults to idldoc)
+% the base LaTeX class (defaults to the article/handout style)
+\newcommand{\@idldoc@class}{article}
+% the name of the package (defaults to idldoc)
+\newcommand{\@idldoc@pkgname}{idldoc}
 \DeclareOption{book}{%
   \renewcommand{\@idldoc@class}{book}
   \renewcommand{\@idldoc@pkgname}{idldoc}
@@ -48,29 +47,21 @@
   \setboolean{@idldoc@titlepage}{false}
 }
 
-%%
 % `titlepage' option -- creates a full title page with \maketitle
-
 \newboolean{@idldoc@titlepage}
 \DeclareOption{titlepage}{\setboolean{@idldoc@titlepage}{true}}
 \DeclareOption{notitlepage}{\setboolean{@idldoc@titlepage}{false}}
 
-%%
 % `a4paper' option
-
 \newboolean{@idldoc@afourpaper}
 \DeclareOption{a4paper}{\setboolean{@idldoc@afourpaper}{true}}
 
-%%
 % `sfsidenotes' option -- typesets sidenotes in sans serif typeface
-
 \newboolean{@idldoc@sfsidenotes}
 \DeclareOption{sfsidenotes}{\setboolean{@idldoc@sfsidenotes}{true}}
 
-%%
 % `symmetric' option -- puts marginpar space to the outside edge of the page
 %   Note: this option forces the twoside option (see the .cls files)
-
 \newboolean{@idldoc@symmetric}
 \DeclareOption{symmetric}{
   \setboolean{@idldoc@symmetric}{true}
@@ -78,34 +69,32 @@
   %\ExecuteOptions{twoside}
 }
 
-%%
 % `twoside' option -- alternates running heads
-
 \newboolean{@idldoc@twoside}
 \DeclareOption{twoside}{
   \setboolean{@idldoc@twoside}{true}
 }
 
-%%
 % `notoc' option -- suppresses the Tufte-style table of contents
-
 \newboolean{@idldoc@toc}
 \setboolean{@idldoc@toc}{true}
 \DeclareOption{notoc}{\setboolean{@idldoc@toc}{false}}
 \DeclareOption{toc}{\setboolean{@idldoc@toc}{true}}
 
-%%
-% `justified' option -- uses fully justified text (flush left and flush
-% right) instead of ragged right.
-
+% `justified' option -- uses fully justified text (flush left and flush right)
+% instead of ragged right.
 \newboolean{@idldoc@justified}
 \DeclareOption{justified}{\setboolean{@idldoc@justified}{true}}
 
-
-% FIXME: should probably specify options not supported like Mittelbach's aipproc.cls
-
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{\@idldoc@class}}
 \ProcessOptions
+
+
+%% Next
+
+\usepackage{helvet}
+\usepackage{listings}
+\lstset{breaklines=true,basicstyle=\ttfamily}
 
 %%
 % Detect whether we're in two-side mode or not.  (Used to set up running
@@ -143,16 +132,19 @@
   \setboolean{@idldoc@xetex}{false}
 }
 
-%%
-% Load the `hyperref' package.  We will set more options later.
-% TODO Set nice defaults for hyperref options
+% load graphicx package
+\ifthenelse{\boolean{@idldoc@xetex}}
+  {\RequirePackage[xetex]{graphicx}}
+  {\RequirePackage[pdftex]{graphicx}}
+\setkeys{Gin}{keepaspectratio}
+
+% load the `hyperref' package
 \ifthenelse{\boolean{@idldoc@xetex}}
   {\RequirePackage[xetex]{hyperref}}
   {\RequirePackage{hyperref}}
-
-\hypersetup{%
-  pdfborder = {0 0 0},
-  hyperfootnotes = false
+\hypersetup{
+  pdfborder={0 0 0},
+  hyperfootnotes=false
 }
 
 %%
@@ -312,7 +304,7 @@
 %%
 % Improved letterspacing of small caps and all-caps text.
 %
-% First, try to use the `microtype' package, if it's available. 
+% First, try to use the `microtype' package, if it's available.
 % Failing that, try to use the `soul' package, if it's available.
 % Failing that, well, I give up.
 
@@ -332,7 +324,7 @@
   }% soul not installed... giving up.
 }
 
-% If we're using pdfLaTeX v1.40+, use the letterspace package. 
+% If we're using pdfLaTeX v1.40+, use the letterspace package.
 % If we're using pdfLaTex < v1.40, use the soul package.
 % If we're using XeLaTeX, use XeLaTeX letterspacing options.
 % Otherwise fall back on the soul package.
@@ -373,7 +365,7 @@
       \PackageInfo{\idldoc@pkgname}{Old version of pdfTeX detected.  Reverting to `soul' package for letterspacing.}
       \@idldoc@loadsoul}
   \else
-    \IfFileExists{letterspace.sty}{% 
+    \IfFileExists{letterspace.sty}{%
       \PackageInfo{\@idldoc@pkgname}{Modern version of pdfTeX detected.  Using `letterspace' package.}
       \RequirePackage{letterspace}
       % Set up letterspacing (using microtype package) -- requires pdfTeX v1.40+
@@ -518,7 +510,7 @@
         \def\@captype{figure}
         \vspace*{#1}
         \@idldoc@justification
-    }    
+    }
     {\end{minipage}%
      \end{lrbox}%
      \marginpar{\usebox{\@idldoc@marginfigbox}}}
@@ -588,7 +580,7 @@
       \hspace{-0.3in}}
   }
   {\end{adjustwidth}}
-  
+
 %%
 % Format the captions in a style similar to the sidenotes
 
@@ -839,31 +831,31 @@
 % See Bringhurst's _The Elements of Typography_, section 4.2.2.
 \renewcommand\subsubsection{%
   \PackageError{\@idldoc@pkgname}{\noexpand\subsubsection is undefined by this class.%
-    \MessageBreak See Robert Bringhurst's _The Elements of 
+    \MessageBreak See Robert Bringhurst's _The Elements of
     \MessageBreak Typographic Style_, section 4.2.2.
     \MessageBreak \noexpand\subsubsection was used}
-    {From Bringhurst's _The Elements of Typographic Style_, section 4.2.2: Use as 
-    \MessageBreak many levels of headings as you need, no more and no fewer.  Also see the many 
+    {From Bringhurst's _The Elements of Typographic Style_, section 4.2.2: Use as
+    \MessageBreak many levels of headings as you need, no more and no fewer.  Also see the many
     \MessageBreak related threads on Ask E.T. at http://www.edwardtufte.com/.}
 }
 
 \renewcommand\paragraph{%
   \PackageError{\@idldoc@pkgname}{\noexpand\paragraph is undefined by this class.%
-    \MessageBreak See Robert Bringhurst's _The Elements of 
+    \MessageBreak See Robert Bringhurst's _The Elements of
     \MessageBreak Typographic Style_, section 4.2.2.
     \MessageBreak \noexpand\paragraph was used}
-    {From Bringhurst's _The Elements of Typographic Style_, section 4.2.2: Use as 
-    \MessageBreak many levels of headings as you need, no more and no fewer.  Also see the many 
+    {From Bringhurst's _The Elements of Typographic Style_, section 4.2.2: Use as
+    \MessageBreak many levels of headings as you need, no more and no fewer.  Also see the many
     \MessageBreak related threads on Ask E.T. at http://www.edwardtufte.com/.}
 }
 
 \renewcommand\subparagraph{%
   \PackageError{\@idldoc@pkgname}{\noexpand\subparagraph is undefined by this class.%
-    \MessageBreak See Robert Bringhurst's _The Elements of 
+    \MessageBreak See Robert Bringhurst's _The Elements of
     \MessageBreak Typographic Style_, section 4.2.2.
     \MessageBreak \noexpand\subparagraph was used}
-    {From Bringhurst's _The Elements of Typographic Style_, section 4.2.2: Use as 
-    \MessageBreak many levels of headings as you need, no more and no fewer.  Also see the many 
+    {From Bringhurst's _The Elements of Typographic Style_, section 4.2.2: Use as
+    \MessageBreak many levels of headings as you need, no more and no fewer.  Also see the many
     \MessageBreak related threads on Ask E.T. at http://www.edwardtufte.com/.}
 }
 

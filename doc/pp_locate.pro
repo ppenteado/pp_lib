@@ -22,8 +22,8 @@
 ; :Keywords:
 ;    histogram : out, optional
 ;      A hash where the keys are the unique values present in `array`, and the values
-;    are the number of occurrences in `array`.
-;    unique_values : out, optional
+;      are the number of occurrences in `array`.
+;      unique_values : out, optional
 ;      An array containing the unique values present in `array`.
 ;    sorted_values : out, optional
 ;      A sorted copy of `array`.
