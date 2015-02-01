@@ -6,7 +6,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-    <title>pp_writencdf.pro (Documentation for pp_lib)</title>
+    <title>pp_sphericalpath.pro (Documentation for pp_lib)</title>
 
     
     <style type="text/css" media="all">
@@ -155,7 +155,7 @@
 
     <script type="text/javascript">
       function setTitle() {
-        parent.document.title="pp_writencdf.pro (Documentation for pp_lib)";
+        parent.document.title="pp_sphericalpath.pro (Documentation for pp_lib)";
       }
     </script>
   </head>
@@ -165,55 +165,113 @@
       <code class="source"><span class="comments">; docformat = 'rst rst'</span>
 <span class="comments">;</span>
 <span class="comments">;+</span>
-<span class="comments">; :Author: Paulo Penteado (http://www.ppenteado.net), 2007</span>
+<span class="comments">; :Author: Paulo Penteado (http://www.ppenteado.net), Nov/2014</span>
 <span class="comments">;-</span>
 <span class="comments">;+</span>
 <span class="comments">; :Description:</span>
-<span class="comments">;    Writes a netcdf file from a structure a in the long format returned by `pp_readncdfs`.</span>
+<span class="comments">;    Given a set of lon/lat points on a sphere, this function calculates vertices of</span>
+<span class="comments">;    a path connecting the input vertices, placed along great circles connecting the</span>
+<span class="comments">;    input vertices. The path is a polygon approximation of the curved path formed by</span>
+<span class="comments">;    the great circles.</span>
+<span class="comments">;    </span>
+<span class="comments">; :Returns:</span>
+<span class="comments">;    A 2D array [2,N] with a set of longitudes/latitudes for the N vertices of the path.</span>
+<span class="comments">;    The number of vertices along each edge is determined by `maxlength`</span>
+<span class="comments">;    or `nsegments`. If `open` is set, the last point is not connected to the first point. </span>
 <span class="comments">;</span>
 <span class="comments">; :Params:</span>
-<span class="comments">;    strin: in, required</span>
-<span class="comments">;      Structure specifying everything about the file to be written. See the help of `pp_readncdfs` for information on the structure format.</span>
+<span class="comments">;    lons: in, required</span>
+<span class="comments">;      An array of longitudes for the vertices which are to be connected by a path made of great circles.</span>
+<span class="comments">;      Must be in degrees, unless `radians` is set.</span>
+<span class="comments">;    lats: in, required</span>
+<span class="comments">;      An array of latitudes for the vertices which are to be connected by a path made of great circles.</span>
+<span class="comments">;      Must be in degrees, unless `radians` is set.</span>
 <span class="comments">;</span>
 <span class="comments">; :Keywords:</span>
-<span class="comments">;    double: in, optional</span>
-<span class="comments">;      If set, makes the variables in double precision.</span>
-<span class="comments">;    </span>
-<span class="comments">; :Todo:</span>
-<span class="comments">;   Process attributes.</span>
+<span class="comments">;    maxlength: in, optional, default=0.1</span>
+<span class="comments">;      If set, specifies the maximum angular length of each segment of the polygon.</span>
+<span class="comments">;    nsegments: in, optional</span>
+<span class="comments">;      If set, specifies a fixed number of vertices to use in for the line connecting each pair</span>
+<span class="comments">;      of input points. If both `maxlength` and `nsegments` are set, `nsegments` takes precendence.</span>
+<span class="comments">;    open: in, optional, default=0</span>
+<span class="comments">;      If set, the output path does not connect the last input point to the first input point.</span>
+<span class="comments">;    _ref_extra: in, out, optional</span>
+<span class="comments">;      Anything else is passed along to map_2points, which is used to create the paths connecting the</span>
+<span class="comments">;      pairs of input points. One commonly used option would be the radians keyword, to use radians,</span>
+<span class="comments">;      instead of degrees, for `lon` and `lat`. See the IDL help for map_2points' options.</span>
 <span class="comments">;</span>
-<span class="comments">; :Author: Paulo Penteado (http://www.ppenteado.net),</span>
+<span class="comments">; :Examples:</span>
+<span class="comments">;   Create a rectangle in lon/lat::</span>
+<span class="comments">;     lons=[30d0,120d0,120d0,30d0]</span>
+<span class="comments">;     lats=[70d0,70d0,10d0,10d0]</span>
+<span class="comments">;   Create a closed path connecting these points::</span>
+<span class="comments">;     path=pp_sphericalpath(lons,lats)</span>
+<span class="comments">;   Create a base map to plot the results (from IDL's imap example)::</span>
+<span class="comments">;     file = FILEPATH('avhrr.png', SUBDIRECTORY=['examples','data'])</span>
+<span class="comments">;     data = READ_PNG(file, r, g, b)</span>
+<span class="comments">;     IMAP, data, LIMIT=[-90,-180,90,180], $</span>
+<span class="comments">;     MAP_PROJECTION='Mollweide', RGB_TABLE=[[r],[g],[b]], $</span>
+<span class="comments">;       IMAGE_TRANSPARENCY=50, GRID_UNITS=2, $</span>
+<span class="comments">;       IMAGE_LOCATION=[-180,-90], IMAGE_DIMENSIONS=[360,180]</span>
+<span class="comments">;   Plot the input points connected by straight lines::</span>
+<span class="comments">;     iplot,lons[[0,1,2,3,0]],lats[[0,1,2,3,0]],color='red',/overplot</span>
+<span class="comments">;   Plot the path created by pp_sphericalpath::</span>
+<span class="comments">;     iplot,/overplot,color='green',path,thick=3.</span>
+<span class="comments">;   The result should look like</span>
+<span class="comments">;     .. image:: pp_sphericalpath_example_1.png</span>
+<span class="comments">;     </span>
+<span class="comments">;   The green path, produced with the output of `pp_sphericalpath` looks</span>
+<span class="comments">;   like a curve, made by the 4 great circles connecting these points. In reality,</span>
+<span class="comments">;   the path is made of 2367 points, separated by 0.1 degrees.</span>
+<span class="comments">;   This can be verified by making the same plot on a gnomonic projection, which has</span>
+<span class="comments">;   the property that great circles are straight lines::</span>
+<span class="comments">;     imap,data,limit=[0,20,80,130],map_projection='mollweide',rgb_table=[[r],[g],[b]],$</span>
+<span class="comments">;     grid_units=2,image_transparency=50,image_location=[-180,-90],$</span>
+<span class="comments">;     image_dimensions=[360,180],center_latitude=50,center_longitude=75</span>
+<span class="comments">;     iplot,/overplot,color='green',path,thick=3.</span>
+<span class="comments">;     </span>
+<span class="comments">;   The result should look like</span>
+<span class="comments">;     .. image:: pp_sphericalpath_example_2.png</span>
+<span class="comments">;     </span>
+<span class="comments">;   Where now the green path is rendered as straight lines, since great circles map</span>
+<span class="comments">;   into straight lines in a gnomonic projection.</span>
+<span class="comments">;</span>
+<span class="comments">;</span>
+<span class="comments">; :Author: Paulo Penteado (http://www.ppenteado.net), Nov/2014</span>
 <span class="comments">;-</span>
-<a id="pp_writencdf:source"></a>pro pp_writencdf,strin,double=double
-if (n_elements(double) ne 1) then double=0
-a=strin
-<span class="comments">;variable and dimension names</span>
-at=strlowcase(tag_names(a))
-adt=where((at eq 'dims')+(at eq 'd'))
-avt=where((at eq 'vars')+(at eq 'v'))
-ant=where((at eq 'nams')+(at eq 'n'))
-an=strlowcase(tag_names(a.(avt)))
-ad=strlowcase(tag_names(a.(adt)))
-nid=ncdf_create(a.ncdfname,/clobber)<span class="comments">;make the file</span>
-<span class="comments">;dimensions</span>
-dids=lonarr(n_elements(ad))
-for i=0,n_elements(ad)-1 do dids[i]=ncdf_dimdef(nid,ad[i],(a.(adt)).(i))
-<span class="comments">;variables declaration</span>
-vids=lonarr(n_elements(an))
-adnt=strlowcase(tag_names(a.(ant)))
-for i=0,n_elements(an)-1 do begin
-  w=where(adnt eq an[i])
-  tmp=(a.(ant).(w))
-  inds=lonarr(n_elements(tmp))
-  for j=0,n_elements(tmp)-1 do inds[j]=where(ad eq tmp[j])
-  dims=dids[inds]
-  vids[i]=ncdf_vardef(nid,an[i],dims,double=double)
+<a id="pp_sphericalpath:source"></a>function pp_sphericalpath,lons,lats,maxlength=maxlength,nsegments=nsegments,open=open,_ref_extra=ex
+compile_opt idl2,logical_predicate
+
+
+<span class="comments">;Defaults</span>
+open=keyword_set(open)
+npoints=n_elements(lons)
+<span class="comments">;Check arguments</span>
+if n_elements(lons) lt 2 then message,'lons must have at least two elements'
+if n_elements(lats) ne npoints then message,'lats must have the same number of elements as lons'
+
+<span class="comments">;Make set of vertices</span>
+np=open ? npoints : npoints+1
+ilons=open ? lons : [lons,lons[0]]
+ilats=open ? lats : [lats,lats[0]]
+
+<span class="comments">;Create output</span>
+ret=ptrarr(np-1)
+count=lon64arr(np)
+maxlength=n_elements(maxlength) ? maxlength : 0.1d0
+  for i=0LL,np-2LL do begin    
+    if n_elements(nsegments) then tmp=map_2points(ilons[i],ilats[i],ilons[i+1],ilats[i+1],npath=nsegments+1,_strict_extra=ex) $
+       else tmp=map_2points(ilons[i],ilats[i],ilons[i+1],ilats[i+1],dpath=maxlength,_strict_extra=ex) 
+    count[i+1]=n_elements(tmp[0,*])
+    ret[i]=ptr_new(tmp)
+  endfor
+res=dblarr(2,total(count,/integer))
+count=total(count,/cumulative,/integer)
+for itmp=0LL,np-2LL do begin
+  res[count[itmp]*2LL]=(*(ret[itmp]))[*]
 endfor
-ncdf_control,nid,/endef
-<span class="comments">;put variables</span>
-for i=0,n_elements(an)-1 do ncdf_varput,nid,vids[i],a.(avt).(i)
-ncdf_close,nid
-print,'netcdf file ',a.ncdfname,' done'
+
+return,res
 end
 </code>
     </div>
