@@ -28,6 +28,10 @@
 ;       with 0. When not set (default), a column containing blanks will be returned as strings.
 ;       Note that, due to the way the original read_csv operates, a colum consisting entirely of blanks
 ;       will be returned a string column.
+;    transp: in, optional, default=0
+;      If set, return the transpose of the default output - shorter than writing pp_structtransp(read_csv_pp()).
+;      This is a structure array, where each element is a row in the file, instead of a structure with
+;      array fields (one per column).
 ;      
 ; :Examples:
 ;    To read IDL's example csv file::
@@ -41,13 +45,13 @@
 ;      ;print,h
 ;      ;Distance from Terminus (meters) Mean Particle size (mm) Sedimentation Rate (g/cm2yr)
 ;      
-; :Requires: `pp_isnumber`, `read_csv_pp_strings`
+; :Requires: `pp_isnumber`, `read_csv_pp_strings`, `pp_structtransp`
 ;    
 ;    
 ;
 ; :Author: Paulo Penteado (`http://www.ppenteado.net <http://www.ppenteado.net>`), Feb/2013
 ;-
-function read_csv_pp,filename,header=header,_ref_extra=ex,field_names=fn,blank=blank
+function read_csv_pp,filename,header=header,_ref_extra=ex,field_names=fn,blank=blank,transp=transp
 compile_opt idl2,logical_predicate
 c=read_csv_pp_strings(filename,_strict_extra=ex,header=header,blank=blank)
 if (n_elements(header) ne n_tags(c)) || (strtrim(strjoin(header),2) eq '') then begin
@@ -73,5 +77,5 @@ endwhile
 fn=fno
 ret=!null
 foreach el,tag_names(c),i do ret=create_struct(ret,fn[i],c.(i))
-return,ret
+return,keyword_set(transp) ? pp_structtransp(ret) : ret
 end

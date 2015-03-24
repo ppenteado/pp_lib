@@ -10,6 +10,7 @@ replaceints=n_elements(missingint)
 replacefloats=n_elements(missingfloat)
 blank=keyword_set(blank)
 buffer=keyword_set(buffer)
+delimiter=n_elements(delimiter) ? delimiter : !null
 
 if buffer then lines=file else lines=pp_readtxt(file)
 if keyword_set(skipblank) then begin
@@ -17,7 +18,7 @@ if keyword_set(skipblank) then begin
 endif
 header=lines[0]
 lines=lines[1:-1]
-s=strsplit(header)
+s=n_elements(delimiter) ? strsplit(header,delimiter) : strsplit(header)
 e=[s[1:-1],max(strlen(lines))]
 l=e-s
 fn=n_elements(delimiter) ? strsplit(header,delimiter,/extract) : strsplit(header,/extract)
