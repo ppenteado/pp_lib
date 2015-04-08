@@ -35,8 +35,9 @@
 ;    rows_for_testing: in, optional, default=100
 ;      The number of rows in the file to use when testing for column types. If set to 0, all rows all used.
 ;    types: in, out, optional
-;      An array of type codes. If provided, assume these types codes for the columns, instead of trying
-;       to determine the column types.
+;      An array of type codes. If provided with values, these types are assumed for the columns, instead of trying
+;       to determine the column types. If provided as an undefined array, the typecodes found for the file are returned
+;       in this array.
 ;    nan: in, optional
 ;       If set, NaNs are allowed as floating-point numbers.
 ;    infinity: in, optional
