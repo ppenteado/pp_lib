@@ -61,6 +61,17 @@
 ;      ;print,h
 ;      ;Distance from Terminus (meters) Mean Particle size (mm) Sedimentation Rate (g/cm2yr)
 ;      
+;    To read that same file, but get the result as a structure array (one element per table row)::
+;    
+;      c=read_csv_pp(file_which('ScatterplotData.csv'),n_table_header=1,header=h,/transp)
+;      help,c
+;      ;C               STRUCT    = -> <Anonymous> Array[154]
+;      help,c[0]
+;      ;** Structure <98322d88>, 3 tags, length=24, data length=20, refs=2:
+;      ;   DISTANCE_FROM_TERMINUS__METERS_ LONG                 0
+;      ;   MEAN_PARTICLE_SIZE__MM_         DOUBLE         0.062000000
+;      ;   SEDIMENTATION_RATE__G_CM2YR_    DOUBLE           32.500000
+;      
 ; :Requires: `pp_isnumber`, `read_csv_pp_strings`, `pp_structtransp`
 ;    
 ;    
