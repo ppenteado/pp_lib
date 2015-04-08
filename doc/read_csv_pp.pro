@@ -32,6 +32,22 @@
 ;      If set, return the transpose of the default output - shorter than writing pp_structtransp(read_csv_pp()).
 ;      This is a structure array, where each element is a row in the file, instead of a structure with
 ;      array fields (one per column).
+;    rows_for_testing: in, optional, default=100
+;      The number of rows in the file to use when testing for column types. If set to 0, all rows all used.
+;    types: in, out, optional
+;      An array of type codes. If provided, assume these types codes for the columns, instead of trying
+;       to determine the column types.
+;    nan: in, optional
+;       If set, NaNs are allowed as floating-point numbers.
+;    infinity: in, optional
+;       If set, infinities are allowed as floating-point numbers.
+;    integer: in, optional
+;       If set, only integers are considered to be numeric types: floating-point numbers will remain
+;       as strings.
+;    trim: in, optional
+;       If set, this keyword is passed to strtrim(), which gets applied to each element being tested
+;       to determine if it is a number. 
+;        
 ;      
 ; :Examples:
 ;    To read IDL's example csv file::
@@ -51,9 +67,12 @@
 ;
 ; :Author: Paulo Penteado (`http://www.ppenteado.net <http://www.ppenteado.net>`), Feb/2013
 ;-
-function read_csv_pp,filename,header=header,_ref_extra=ex,field_names=fn,blank=blank,transp=transp
+function read_csv_pp,filename,header=header,_ref_extra=ex,field_names=fn,blank=blank,transp=transp,$
+  rows_for_testing=rows_for_testing,types=types,$
+  nan=nan,infinity=infinity,integer=integer,trim=trim
 compile_opt idl2,logical_predicate
-c=read_csv_pp_strings(filename,_strict_extra=ex,header=header,blank=blank)
+c=read_csv_pp_strings(filename,_strict_extra=ex,header=header,blank=blank,$
+  rows_for_testing=rows_for_testing,types=types,nan=nan,infinity=infinity,integer=integer,trim=trim)
 if (n_elements(header) ne n_tags(c)) || (strtrim(strjoin(header),2) eq '') then begin
   header=strarr(n_tags(c))
   foreach el,tag_names(c),i do header[i]=(c.(i))[0]

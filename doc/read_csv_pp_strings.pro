@@ -1,3 +1,4 @@
+; docformat = 'idl'
 ; $Id: //depot/Release/ENVI50_IDL82/idl/idldir/lib/read_csv.pro#2 $
 ;
 ; Copyright (c) 2008-2012, Exelis Visual Information Solutions, Inc. All
