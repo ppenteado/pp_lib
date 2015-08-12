@@ -20,6 +20,7 @@
  ;    
  ; :Examples:
  ;   Read the example file ascii.txt included with IDL::
+ ;   
  ;     fp=filepath('ascii.txt',subdir=['examples','data'])
  ;     contents=pp_readtxt(fp)
  ;     help,contents
