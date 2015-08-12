@@ -38,8 +38,12 @@ if self.verbose then begin
   print,''
 endif
 
-event.id.getproperty,value=val
-self.values[event.name]=val
+if (tag_names(event)).hasvalue('VALUE') then begin
+  event.id.getproperty,value=val
+  self.values[event.name]=val
+endif
+
+
 
 case event.name of
   'exitbutton': begin
