@@ -1,3 +1,4 @@
+ ; docformat = 'rst'
  ;+
  ; :Author: Paulo Penteado (http://www.ppenteado.net), Feb/2014
  ;-
