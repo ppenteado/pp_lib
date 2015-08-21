@@ -108,6 +108,13 @@ libdata[libdataItem++] = new Array("./pp_colorbar_range.html", "pp_colorbar_rang
   
   
 
+libdata[libdataItem++] = new Array("./pp_colortripletolong.html", "pp_colortripletolong.pro", '.pro file in <a href="./dir-overview.html">./ directory</a>', "pp_colortripletolong.pro", "Paulo Penteado (http://www.ppenteado.net), Aug/2015  ", "", "", "", "          -1", "");
+  
+  
+  libdata[libdataItem++] = new Array("./pp_colortripletolong.html#pp_colortripletolong", "pp_colortripletolong", 'routine in <a href="./pp_colortripletolong.html">pp_colortripletolong.pro</a>', "pp_colortripletolong.pro", "Paulo Penteado (http://www.ppenteado.net), Aug/2015  ", "pp_colortripletolong", "    Converts colors from RGB color triples to long integers. Input can be a single triple     or multiple triples, as an array of any dimension. The inverse of this function is     pp_longtocolortriple.   ", "icolors      An array of color triples. The first dimension of the array must have size 3,       and be the color dimension.   ", "          -1", "   Convert black and white, from RGB vectors to long integers: <span class= code-output > print,pp_colortripletolong([[0,0,0],[255,255,255]])</span> <span class= code-output > ;           0    16777215</span>        An array with colors encoded as long integers, one long per per input triple. Output     dimension is one less than input.   ");
+  
+  
+
 libdata[libdataItem++] = new Array("./pp_contour_paths.html", "pp_contour_paths.pro", '.pro file in <a href="./dir-overview.html">./ directory</a>', "pp_contour_paths.pro", "", "", "", "", "          -1", "");
   
   
@@ -257,6 +264,13 @@ libdata[libdataItem++] = new Array("./pp_locate.html", "pp_locate.pro", '.pro fi
   
   
 
+libdata[libdataItem++] = new Array("./pp_longtocolortriple.html", "pp_longtocolortriple.pro", '.pro file in <a href="./dir-overview.html">./ directory</a>', "pp_longtocolortriple.pro", "Paulo Penteado (http://www.ppenteado.net), Aug/2015  ", "", "", "", "          -1", "");
+  
+  
+  libdata[libdataItem++] = new Array("./pp_longtocolortriple.html#pp_longtocolortriple", "pp_longtocolortriple", 'routine in <a href="./pp_longtocolortriple.html">pp_longtocolortriple.pro</a>', "pp_longtocolortriple.pro", "Paulo Penteado (http://www.ppenteado.net), Aug/2015  ", "pp_longtocolortriple", "    Converts colors from long integers to RGB color triples. Input can be either scalar     or an array. The inverse of this function is     pp_colortripletolong.   ", "icolors      A scalar or array of colors encoded as long integers.   ", "          -1", "   Convert black and white, from long integers to RGB vectors: <span class= code-output > print,pp_longtocolortriple([0L,2L^24-1])</span> <span class= code-output > ;     0           0           0</span> <span class= code-output > ;     255         255         255</span>        An array with RGB color triples, one triple per input element. If input is an array,     output is an array with one extra dimension, of size 3, as the first dimension. If input     is scalar, output is simply a 3-element array.   ");
+  
+  
+
 libdata[libdataItem++] = new Array("./pp_lorentz_from_fwhm.html", "pp_lorentz_from_fwhm.pro", '.pro file in <a href="./dir-overview.html">./ directory</a>', "pp_lorentz_from_fwhm.pro", "Paulo Penteado (pp.penteado@gmail.com), Nov/2010  ", "", "", "", "          -1", "");
   
   
@@ -357,10 +371,10 @@ libdata[libdataItem++] = new Array("./pp_readpars.html", "pp_readpars.pro", '.pr
   
   
 
-libdata[libdataItem++] = new Array("./pp_readtxt.html", "pp_readtxt.pro", '.pro file in <a href="./dir-overview.html">./ directory</a>', "pp_readtxt.pro", "", "", " :Author: Paulo Penteado (http://www.ppenteado.net), Feb/2014  ", "", "          -1", "");
+libdata[libdataItem++] = new Array("./pp_readtxt.html", "pp_readtxt.pro", '.pro file in <a href="./dir-overview.html">./ directory</a>', "pp_readtxt.pro", "Paulo Penteado (http://www.ppenteado.net), Feb/2014  ", "", "", "", "          -1", "");
   
   
-  libdata[libdataItem++] = new Array("./pp_readtxt.html#pp_readtxt", "pp_readtxt", 'routine in <a href="./pp_readtxt.html">pp_readtxt.pro</a>', "pp_readtxt.pro", "", "pp_readtxt", " :Description:     Reads a text file into a string array. Each line of the text file becomes     one element of the string array.   :Params:     file: in, required       A string with the name of the file to read.     count: out, optional       Returns the number of lines read from the file   :Returns:     A string array with the file contents, one element per line in the file.   :Examples:    Read the example file ascii.txt included with IDL::       fp=filepath('ascii.txt',subdir=['examples','data'])      contents=pp_readtxt(fp)      help,contents      ;CONTENTS        STRING    = Array[20]      print,contents[0:3],format='(A)'      ; This file contains ASCII format weather data in a comma delimited table      ; with comments prefaced by the  %  character. The columns represent:      ; Longitude, latitude, elevation (in feet), temperature (in degrees F),      ; dew point (in degrees  F), wind speed (knots), wind direction (degrees)     :Author: Paulo Penteado (http://www.ppenteado.net),  ", "filecount", "          -1", "");
+  libdata[libdataItem++] = new Array("./pp_readtxt.html#pp_readtxt", "pp_readtxt", 'routine in <a href="./pp_readtxt.html">pp_readtxt.pro</a>', "pp_readtxt.pro", "Paulo Penteado (http://www.ppenteado.net),  ", "pp_readtxt", "    Reads a text file into a string array. Each line of the text file becomes     one element of the string array.   ", "file      A string with the name of the file to read.  count      Returns the number of lines read from the file   ", "          -1", "   Read the example file ascii.txt included with IDL: <span class= code-output > fp=filepath('ascii.txt',subdir=['examples','data'])</span> <span class= code-output > contents=pp_readtxt(fp)</span> <span class= code-output > help,contents</span> <span class= code-output > ;CONTENTS        STRING    = Array[20]</span> <span class= code-output > print,contents[0:3],format='(A)'</span> <span class= code-output > ; This file contains ASCII format weather data in a comma delimited table</span> <span class= code-output > ; with comments prefaced by the  %  character. The columns represent:</span> <span class= code-output > ; Longitude, latitude, elevation (in feet), temperature (in degrees F),</span> <span class= code-output > ; dew point (in degrees  F), wind speed (knots), wind direction (degrees)</span>        A string array with the file contents, one element per line in the file.   ");
   
   
 
