@@ -128,9 +128,14 @@ if isa(lons,'list') && isa (lats,'list') then begin
   count=lon64arr(np)
   maxlength=n_elements(maxlength) ? maxlength : 0.1d0
     for i=0LL,np-2LL do begin    
-      if n_elements(nsegments) then tmp=map_2points(ilons[i],ilats[i],ilons[i+1],ilats[i+1],npath=nsegments+1,_strict_extra=ex) $
-         else tmp=map_2points(ilons[i],ilats[i],ilons[i+1],ilats[i+1],dpath=maxlength,_strict_extra=ex) 
-      count[i+1]=n_elements(tmp[0,*])
+      if n_elements(nsegments) then begin
+        if nsegments ge 1 then tmp=map_2points(ilons[i],ilats[i],ilons[i+1],ilats[i+1],npath=nsegments+1,_strict_extra=ex) else begin
+          tmp=map_2points(ilons[i],ilats[i],ilons[i+1],ilats[i+1],npath=2,_strict_extra=ex)
+          countt=n_elements(tmp)/2LL
+          tmp=i eq 0 ? tmp[*,[0,countt-1]] : tmp[*,[countt-1]]
+        endelse
+      endif else tmp=map_2points(ilons[i],ilats[i],ilons[i+1],ilats[i+1],dpath=maxlength,_strict_extra=ex)  
+      count[i+1]=n_elements(tmp)/2LL
       ret[i]=ptr_new(tmp)
     endfor
   res=dblarr(2,total(count,/integer))
