@@ -461,6 +461,15 @@ libdata[libdataItem++] = new Array("./read_csv_pp_strings.html", "read_csv_pp_st
   
   
 
+libdata[libdataItem++] = new Array("./tessellateshapes_pp.html", "tessellateshapes_pp.pro", '.pro file in <a href="./dir-overview.html">./ directory</a>', "tessellateshapes_pp.pro", "Paulo Penteado (http://www.ppenteado.net), Aug/2015  ", "", "", "", "          -1", "");
+  
+  
+  libdata[libdataItem++] = new Array("./tessellateshapes_pp.html#IDLitVisPolygon::_TessellateShapes", "IDLitVisPolygon::_TessellateShapes", 'routine in <a href="./tessellateshapes_pp.html">tessellateshapes_pp.pro</a>', "tessellateshapes_pp.pro", "Paulo Penteado (http://www.ppenteado.net), Aug/2015  ", "IDLitVisPolygon::_TessellateShapes", "    Just a function to overwrite IDL's _tessellateshapes, to preserve vertex     colors when the vertices are tessellated into a different number of vertices.     This file is compiled by pp_drawshericalpoly, to make sure this method is compiled     after the native _tessellateshapes.   ", "MAP_STRUCTUREPOLYGONSVERT_COLORS dataconnectivityshapesvertColors ", "          -1", "");
+  
+  libdata[libdataItem++] = new Array("./tessellateshapes_pp.html#tessellateshapes_pp", "tessellateshapes_pp", 'routine in <a href="./tessellateshapes_pp.html">tessellateshapes_pp.pro</a>', "tessellateshapes_pp.pro", "Paulo Penteado (http://www.ppenteado.net), Aug/2015  ", "tessellateshapes_pp", "    A dummy procedure, that exists just to get this file compiled when needed, to     get the _tessellateshapes method above compiled.     This file is compiled by pp_drawshericalpoly, to make sure this method is compiled     after the native _tessellateshapes.   ", "", "          -1", "");
+  
+  
+
 libdata[libdataItem++] = new Array("./write_csv_pp.html", "write_csv_pp.pro", '.pro file in <a href="./dir-overview.html">./ directory</a>', "write_csv_pp.pro", "Paulo Penteado (http://www.ppenteado.net), Feb/2013  This file contains write_csv_pp, and a copy of IDL's write_csv routines (renamed write_csv_pp_original  and write_csv_convert_pp_original), since write_csv_pp requires an edit on the original write_csv.  ", "", "", "", "          -1", "");
   
   
