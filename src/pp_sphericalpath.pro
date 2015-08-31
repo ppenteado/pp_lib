@@ -19,7 +19,7 @@
 ;
 ; :Params:
 ;    lons: in, required
-;      An array of longitudes for the vertices which are to be connected by a path made of great circles.
+;      An array of latitudes for the vertices which are to be connected by a path made of great circles.
 ;      Must be in degrees, unless `radians` is set.
 ;      Multiple polygons are supported in two different ways: 1) If all N polygons have the same number of
 ;      vertices (M), lons can be given as a [M,N] array. 2) For arbitrary numbers of vertices, lons is given

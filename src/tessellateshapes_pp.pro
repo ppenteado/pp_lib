@@ -10,17 +10,6 @@
 ;    This file is compiled by `pp_drawshericalpoly`, to make sure this method is compiled
 ;    after the native _tessellateshapes.
 ;
-; :Params:
-;    data
-;    connectivity
-;    shapes
-;    vertColors
-;
-; :Keywords:
-;    MAP_STRUCTURE
-;    POLYGONS
-;    VERT_COLORS
-;
 ; :Author: Paulo Penteado (http://www.ppenteado.net), Aug/2015
 ;-
 function IDLitVisPolygon::_TessellateShapes, $
