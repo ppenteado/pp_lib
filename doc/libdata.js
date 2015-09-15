@@ -468,7 +468,7 @@ libdata[libdataItem++] = new Array("./read_csv_pp_strings.html", "read_csv_pp_st
   
   
 
-libdata[libdataItem++] = new Array("./tessellateshapes_pp.html", "tessellateshapes_pp.pro", '.pro file in <a href="./dir-overview.html">./ directory</a>', "tessellateshapes_pp.pro", "Paulo Penteado (http://www.ppenteado.net), based on the original code  that comes with IDL.   ", "", "", "", "          -1", "");
+libdata[libdataItem++] = new Array("./tessellateshapes_pp.html", "tessellateshapes_pp.pro", '.pro file in <a href="./dir-overview.html">./ directory</a>', "tessellateshapes_pp.pro", "Paulo Penteado (http://www.ppenteado.net), based on the original code  that comes with IDL.   ", "", "", "", "          -1", "    Just a function to overwrite IDL's _tessellateshapes, to preserve vertex     colors when the vertices are tessellated into a different number of vertices.     This file is compiled by pp_drawshericalpoly, to make sure this method is compiled     after the native _tessellateshapes.   ");
   
   
   libdata[libdataItem++] = new Array("./tessellateshapes_pp.html#IDLitVisPolygon::_TessellateShapes", "IDLitVisPolygon::_TessellateShapes", 'routine in <a href="./tessellateshapes_pp.html">tessellateshapes_pp.pro</a>', "tessellateshapes_pp.pro", "Paulo Penteado (http://www.ppenteado.net), Aug/2015  ", "IDLitVisPolygon::_TessellateShapes", "    Just a function to overwrite IDL's _tessellateshapes, to preserve vertex     colors when the vertices are tessellated into a different number of vertices.     This file is compiled by pp_drawshericalpoly, to make sure this method is compiled     after the native _tessellateshapes. The changes are at lines 117-120.   ", "MAP_STRUCTUREPOLYGONSVERT_COLORSdataconnectivityshapesvertColors", "          -1", "");
