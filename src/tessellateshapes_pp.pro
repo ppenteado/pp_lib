@@ -3,7 +3,7 @@
 ; :Author: Paulo Penteado (http://www.ppenteado.net), based on the original code
 ; that comes with IDL.
 ; 
-; :Description:
+; :History:
 ;    Just a function to overwrite IDL's _tessellateshapes, to preserve vertex
 ;    colors when the vertices are tessellated into a different number of vertices.
 ;    This file is compiled by `pp_drawshericalpoly`, to make sure this method is compiled
