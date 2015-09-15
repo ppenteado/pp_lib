@@ -1,6 +1,14 @@
 ; docformat = 'rst'
 ;+
-; :Author: Paulo Penteado (http://www.ppenteado.net), Aug/2015
+; :Author: Paulo Penteado (http://www.ppenteado.net), based on the original code
+; that comes with IDL.
+; 
+; :Description:
+;    Just a function to overwrite IDL's _tessellateshapes, to preserve vertex
+;    colors when the vertices are tessellated into a different number of vertices.
+;    This file is compiled by `pp_drawshericalpoly`, to make sure this method is compiled
+;    after the native _tessellateshapes.
+; 
 ;-
 
 ;+
@@ -8,7 +16,7 @@
 ;    Just a function to overwrite IDL's _tessellateshapes, to preserve vertex
 ;    colors when the vertices are tessellated into a different number of vertices.
 ;    This file is compiled by `pp_drawshericalpoly`, to make sure this method is compiled
-;    after the native _tessellateshapes.
+;    after the native _tessellateshapes. The changes are at lines 117-120.
 ;
 ; :Author: Paulo Penteado (http://www.ppenteado.net), Aug/2015
 ;-

@@ -28,8 +28,13 @@ end
 ; :Author: Paulo Penteado (http://www.ppenteado.net), Aug/2015
 ;-
 pro pp_drawsphericalpoly_direct,paths,colors,_ref_extra=ex,$
-  irgbt
+  irgbt,stack=stack
   compile_opt idl2,logical_predicate,hidden
+
+if arg_present(stack) then begin
+  
+  return
+endif
   
 if n_elements(irgbt) then begin
   device,get_decomposed=dec
@@ -205,7 +210,7 @@ pro pp_drawsphericalpoly,lons,lats,colors,_ref_extra=ex,$
   rgb_table=rgbt,$
   cg=cg,graphics=graphics,itool=itool,direct=direct,$
   maxlength=maxlength,nsegments=nsegments,polygon=polygon,$
-  x=x,y=y,connectivity=conn,fill=fill  
+  x=x,y=y,connectivity=conn,fill=fill,stack=stack  
 compile_opt idl2,logical_predicate
 
 ;Force the _tessellateshapes method in tessellateshapes_pp to be compiled after
@@ -247,7 +252,7 @@ endelse
 case 1 of
   (cg): pp_drawsphericalpoly_cg,paths,icolors,_strict_extra=ex,irgbt,fill=fill
   (itool): pp_drawsphericalpoly_itool,paths,icolors,_strict_extra=ex,irgbt;,fill=fill
-  (direct): pp_drawsphericalpoly_direct,paths,icolors,_strict_extra=ex,irgbt
+  (direct): pp_drawsphericalpoly_direct,paths,icolors,_strict_extra=ex,irgbt,stack=stack
   else: pp_drawsphericalpoly_itool,paths,icolors,_strict_extra=ex,irgbt,polygon=polygon,$
     x=x,y=y,connectivity=conn,/graphic
 endcase
