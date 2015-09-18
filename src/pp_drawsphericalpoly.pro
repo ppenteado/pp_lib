@@ -33,7 +33,7 @@ pro pp_drawsphericalpoly_direct,paths,colors,_ref_extra=ex,$
   compile_opt idl2,logical_predicate,hidden
 
 
-if arg_present(stack) then begin
+if arg_present(stackm) then begin
   origim=tvrd()
   mapim=tvrd(channel=0)
   szm=size(mapim,/dimensions)
