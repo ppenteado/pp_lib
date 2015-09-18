@@ -51,7 +51,7 @@ if arg_present(stack) then begin
     w=where(tmp,wc)
     if wc then begin
       cip=colors[ip]
-      foreach pt,w do stackm[pt*maxstack+stackc[pt]]=cip
+      foreach pt,w do if stackc[pt] lt maxstack then stackm[pt*maxstack+stackc[pt]]=cip
       stackc[w]+=1
     endif
   endforeach
