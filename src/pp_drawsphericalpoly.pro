@@ -28,11 +28,33 @@ end
 ; :Author: Paulo Penteado (http://www.ppenteado.net), Aug/2015
 ;-
 pro pp_drawsphericalpoly_direct,paths,colors,_ref_extra=ex,$
-  irgbt,stack=stack
+  irgbt,stackmap=stackm,original_image=origim,maxstack=maxstack,$
+  stacklist=stacklist,stackcount=stackc
   compile_opt idl2,logical_predicate,hidden
 
+
 if arg_present(stack) then begin
-  
+  origim=tvrd()
+  mapim=tvrd(channel=0)
+  szm=size(mapim,/dimensions)
+  stackc=lon64arr(szm)
+  ;stackmin=dblarr(szm)+!values.d_nan
+  ;stackmax=dblarr(szm)+!values.d_nan
+  ;stackmean=dblarr(szm)
+  ;stackstddev=dblarr(szm)
+  maxstack=n_elements(maxstack) ? maxstack : n_elements(paths)
+  stackm=dblarr([maxstack,szm])+!values.d_nan
+  foreach p,paths,ip do begin
+    erase
+    polyfill,p[0,*],p[1,*],/data,_strict_extra=ex
+    tmp=tvrd(channel=0)
+    w=where(tmp,wc)
+    if wc then begin
+      cip=colors[ip]
+      foreach pt,w do stackm[pt*maxstack+stackc[pt]]=cip
+      stackc[w]+=1
+    endif
+  endforeach
   return
 endif
   
@@ -210,7 +232,9 @@ pro pp_drawsphericalpoly,lons,lats,colors,_ref_extra=ex,$
   rgb_table=rgbt,$
   cg=cg,graphics=graphics,itool=itool,direct=direct,$
   maxlength=maxlength,nsegments=nsegments,polygon=polygon,$
-  x=x,y=y,connectivity=conn,fill=fill,stack=stack  
+  x=x,y=y,connectivity=conn,fill=fill,$
+  stackmap=stackm,original_image=origim,maxstack=maxstack,$
+  stacklist=stacklist,stackcount=stackc
 compile_opt idl2,logical_predicate
 
 ;Force the _tessellateshapes method in tessellateshapes_pp to be compiled after
@@ -252,7 +276,9 @@ endelse
 case 1 of
   (cg): pp_drawsphericalpoly_cg,paths,icolors,_strict_extra=ex,irgbt,fill=fill
   (itool): pp_drawsphericalpoly_itool,paths,icolors,_strict_extra=ex,irgbt;,fill=fill
-  (direct): pp_drawsphericalpoly_direct,paths,icolors,_strict_extra=ex,irgbt,stack=stack
+  (direct): pp_drawsphericalpoly_direct,paths,icolors,_strict_extra=ex,irgbt,$
+    stackmap=stackm,original_image=origim,maxstack=maxstack,$
+    stacklist=stacklist,stackcount=stackc
   else: pp_drawsphericalpoly_itool,paths,icolors,_strict_extra=ex,irgbt,polygon=polygon,$
     x=x,y=y,connectivity=conn,/graphic
 endcase
