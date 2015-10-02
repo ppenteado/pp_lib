@@ -8,7 +8,8 @@
 ;    file formats and processing to be applied to the file. The output can be a string array or an
 ;    array of structures.
 ;
-; :Params: in, required
+; :Params:
+;   file: in, required
 ;    A string with the file name to read. If `buffer` is set, this should be a string
 ;    array, where each element correponds to what would be a file line.
 ;
