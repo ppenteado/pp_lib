@@ -123,7 +123,7 @@ nheader=n_elements(nheader) ? nheader : 1L
 header=nheader ? lines[0:nheader-1] : !null
 if header eq !null then begin
   ncol=n_elements(strsplit(lines[0],/extract))
-  header=field+strtrim(sindgen(ncol))
+  header='field_'+strtrim(sindgen(ncol))
 endif
 lines=lines[nheader:-1]
 s=n_elements(delimiter) ? strsplit(header[-1],delimiter) : strsplit(header[-1])
