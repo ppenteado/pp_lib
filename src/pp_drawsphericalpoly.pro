@@ -30,7 +30,7 @@ end
 pro pp_drawsphericalpoly_direct,paths,colors,_ref_extra=ex,$
   irgbt,stackmap=stackm,original_image=origim,maxstack=maxstack,$
   stacklist=stacklist,stackcount=stackc,verbose=verbose,do_stack=do_stack,$
-  weights=weights,stackweights=stackw,doweight=dow,stackindex=stacki,doi=doi
+  weights=weights,stackweights=stackw,doweight=dow,stackindex=stacki,doi=doi,pcount=pcount
   compile_opt idl2,logical_predicate,hidden
 
 
@@ -40,6 +40,7 @@ if do_stack then begin
   mapim=tvrd(channel=0)
   szm=size(mapim,/dimensions)
   stackc=lon64arr(szm)
+  if do_stack then pcount=lon64arr(n_elements(colors))
   if do_stack eq 1 then begin
     maxstack=n_elements(maxstack) ? maxstack : n_elements(paths)
     stackm=dblarr([maxstack,szm])+!values.d_nan
@@ -63,6 +64,7 @@ if do_stack then begin
     if verbose && ~(ip mod verbose) then print,ip
     tmp=tvrd(channel=0)
     w=where(tmp,wc)
+    pcount[ip]=wc
     if wc then begin
       cip=colors[ip]
       if dow then wip=weights[ip]
@@ -259,7 +261,7 @@ pro pp_drawsphericalpoly,lons,lats,colors,_ref_extra=ex,$
   x=x,y=y,connectivity=conn,fill=fill,$
   stackmap=stackm,original_image=origim,maxstack=maxstack,$
   stacklist=stacklist,stackcount=stackc,verbose=verbose,do_stack=do_stack,$
-  weights=weights,stackweights=stackw,stackindex=stacki
+  weights=weights,stackweights=stackw,stackindex=stacki,pcount=pcount
 compile_opt idl2,logical_predicate
 
 verbose=n_elements(verbose) ? verbose : 0
@@ -318,7 +320,7 @@ case 1 of
   (direct): pp_drawsphericalpoly_direct,paths,icolors,_strict_extra=ex,irgbt,$
     stackmap=stackm,original_image=origim,maxstack=maxstack,$
     stacklist=stacklist,stackcount=stackc,verbose=verbose,do_stack=do_stack,weights=weights,$
-    stackweights=stackw,doweight=dow,stackindex=stacki,doi=doi
+    stackweights=stackw,doweight=dow,stackindex=stacki,doi=doi,pcount=pcount
   else: pp_drawsphericalpoly_itool,paths,icolors,_strict_extra=ex,irgbt,polygon=polygon,$
     x=x,y=y,connectivity=conn,/graphic
 endcase
