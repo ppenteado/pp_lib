@@ -108,7 +108,11 @@ pro pp_drawsphericalpoly_itool,paths,colors,_ref_extra=ex,$
   irgbt,polygon=poly,connectivity=conn,x=x,y=y,graphic=graphic
 compile_opt idl2,logical_predicate,hidden
 
-xy=paths.toarray(dimension=2)
+if (!version.release ge '8.2.3') then xy=paths.toarray(dimension=2) else begin
+  xy=paths.toarray(/transpose)
+  szxy=size(xy,/dimensions,/long)
+  xy=reform(xy,[szxy[0],szxy[1]*szxy[2])
+endif
 conn=lonarr(n_elements(paths)+n_elements(xy)/2LL)
 count=0LL
 cols=lonarr(3,n_elements(xy)/2LL)
