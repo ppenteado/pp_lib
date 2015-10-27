@@ -111,7 +111,7 @@ compile_opt idl2,logical_predicate,hidden
 if (!version.release ge '8.2.3') then xy=paths.toarray(dimension=2) else begin
   xy=paths.toarray(/transpose)
   szxy=size(xy,/dimensions,/long)
-  xy=reform(xy,[szxy[0],szxy[1]*szxy[2])
+  xy=reform(xy,[szxy[0],szxy[1]*szxy[2]])
 endif
 conn=lonarr(n_elements(paths)+n_elements(xy)/2LL)
 count=0LL
