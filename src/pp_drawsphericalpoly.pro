@@ -111,11 +111,6 @@ pro pp_drawsphericalpoly_itool,paths,colors,_ref_extra=ex,$
 compile_opt idl2,logical_predicate,hidden
 
 if (!version.release ge '8.2.3') then xy=paths.toarray(dimension=2) else begin
-<<<<<<< HEAD
-  xy=paths.toarray(/transpose)
-  szxy=size(xy,/dimensions,/long)
-  xy=reform(xy,[szxy[0],szxy[1]*szxy[2]])
-=======
   nxy=0LL & foreach p,paths do nxy+=(size(p,/dimensions))[1]
   xy=dblarr(2,nxy)
   count=0LL
@@ -123,7 +118,6 @@ if (!version.release ge '8.2.3') then xy=paths.toarray(dimension=2) else begin
     xy[count]=p[*]
     count+=n_elements(p)
   endforeach
->>>>>>> b26320a3d81c970a9b62b0d8cc5606b629879ebd
 endelse
 conn=lonarr(n_elements(paths)+n_elements(xy)/2LL)
 count=0LL
