@@ -71,12 +71,12 @@ if do_stack then begin
       if do_stack eq 1 then begin
         foreach pt,w do if stackc[pt] lt maxstack then stackm[pt*maxstack+stackc[pt]]=cip
         if dow then foreach pt,w do if stackc[pt] lt maxstack then stackw[pt*maxstack+stackc[pt]]=wip
-        if doi then foreach pt,w do if stackc[pt] lt maxstack then stacki[pt*maxstack+stackc[pt]]=pt
+        if doi then foreach pt,w do if stackc[pt] lt maxstack then stacki[pt*maxstack+stackc[pt]]=ip
       endif
       if do_stack eq 2 then begin
         foreach pt,w do (stackm[pt]).add,cip
         if dow then foreach pt,w do (stackw[pt]).add,wip
-        if doi then foreach pt,w do (stacki[pt]).add,pt
+        if doi then foreach pt,w do (stacki[pt]).add,ip
       endif
       stackc[w]+=1
     endif
