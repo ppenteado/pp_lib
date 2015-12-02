@@ -37,8 +37,8 @@ pro pp_drawsphericalpoly_direct,paths,colors,_ref_extra=ex,$
 
 if do_stack then begin
   eh={fill:1,color:cgcolor('red')}
-  if n_elements(e_map) then map_set,e_horizon={fill:1,color:cgcolor('red')},/noborder,_strict_extra=e_map,e_horizon=eh else $
-   map_set,e_horizon={fill:1,color:cgcolor('red')},/noborder,/isotropic,/cylindrical,e_horizon=eh
+  if n_elements(e_map) then map_set,/noborder,_strict_extra=e_map,e_horizon=eh else $
+   map_set,/noborder,/isotropic,/cylindrical,e_horizon=eh
   if dow && (n_elements(weights) ne n_elements(colors)) then weights=replicate(1d0,n_elements(colors))
   origim=tvrd()
   mapim=tvrd(channel=0)
