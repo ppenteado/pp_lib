@@ -30,14 +30,21 @@ end
 pro pp_drawsphericalpoly_direct,paths,colors,_ref_extra=ex,$
   irgbt,stackmap=stackm,original_image=origim,maxstack=maxstack,$
   stacklist=stacklist,stackcount=stackc,verbose=verbose,do_stack=do_stack,$
-  weights=weights,stackweights=stackw,doweight=dow,stackindex=stacki,doi=doi,pcount=pcount
+  weights=weights,stackweights=stackw,doweight=dow,stackindex=stacki,doi=doi,$
+  pcount=pcount,e_map=e_map
   compile_opt idl2,logical_predicate,hidden
 
 
 if do_stack then begin
+  eh={fill:1,color:cgcolor('red')}
+  if n_elements(e_map) then map_set,e_horizon={fill:1,color:cgcolor('red')},/noborder,_strict_extra=e_map,e_horizon=eh else $
+   map_set,e_horizon={fill:1,color:cgcolor('red')},/noborder,/isotropic,/cylindrical,e_horizon=eh
   if dow && (n_elements(weights) ne n_elements(colors)) then weights=replicate(1d0,n_elements(colors))
   origim=tvrd()
   mapim=tvrd(channel=0)
+  maskr=tvrd(channel=0) & maskg=tvrd(channel=1) & maskb=tvrd(channel=2)
+  mask=(maskr eq 255B) and (maskg eq 0B) and (maskb eq 0B)
+  nmask=total(mask,/integer) 
   szm=size(mapim,/dimensions)
   stackc=lon64arr(szm)
   if do_stack then pcount=lon64arr(n_elements(colors))
@@ -60,10 +67,15 @@ if do_stack then begin
   endelse
   foreach p,paths,ip do begin
     erase
-    polyfill,p[0,*],p[1,*],/data,_strict_extra=ex
+    polyfill,p[0,*],p[1,*],/data,_strict_extra=ex,color=cgcolor('blue')
     if verbose && ~(ip mod verbose) then print,ip
-    tmp=tvrd(channel=0)
+    tmpr=tvrd(channel=0) & tmpg=tvrd(channel=1) & tmpb=tvrd(channel=2)
+    tmp=mask and (tmpr eq 0B) and (tmpg eq 0B) and (tmpb eq 255B)
     w=where(tmp,wc)
+    if wc gt nmask/2 then begin
+      tmp=mask and (not tmp)
+      w=where(tmp,wc)
+    endif
     pcount[ip]=wc
     if wc then begin
       cip=colors[ip]
