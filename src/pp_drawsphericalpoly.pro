@@ -42,8 +42,8 @@ if do_stack then begin
   if dow && (n_elements(weights) ne n_elements(colors)) then weights=replicate(1d0,n_elements(colors))
   origim=tvrd()
   mapim=tvrd(channel=0)
-  maskr=tvrd(channel=0) & maskg=tvrd(channel=1) & maskb=tvrd(channel=2)
-  mask=(maskr eq 255B) and (maskg eq 0B) and (maskb eq 0B)
+  maskrgb=tvrd()
+  mask=maskrgb eq cgcolor('red')
   nmask=total(mask,/integer) 
   szm=size(mapim,/dimensions)
   stackc=lon64arr(szm)
@@ -69,8 +69,8 @@ if do_stack then begin
     erase
     polyfill,p[0,*],p[1,*],/data,_strict_extra=ex,color=cgcolor('blue')
     if verbose && ~(ip mod verbose) then print,ip
-    tmpr=tvrd(channel=0) & tmpg=tvrd(channel=1) & tmpb=tvrd(channel=2)
-    tmp=mask and (tmpr eq 0B) and (tmpg eq 0B) and (tmpb eq 255B)
+    tmprgb=tvrd()
+    tmp=mask and (tmp eq cgcolor('blue')) 
     w=where(tmp,wc)
     if wc gt nmask/2 then begin
       tmp=mask and (not tmp)
