@@ -70,7 +70,7 @@ if do_stack then begin
     polyfill,p[0,*],p[1,*],/data,_strict_extra=ex,color=cgcolor('blue')
     if verbose && ~(ip mod verbose) then print,ip
     tmprgb=tvrd()
-    tmp=mask and (tmp eq cgcolor('blue')) 
+    tmp=mask and (tmprgb eq cgcolor('blue')) 
     w=where(tmp,wc)
     if wc gt nmask/2 then begin
       tmp=mask and (not tmp)
