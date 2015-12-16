@@ -30,16 +30,24 @@ end
 pro pp_drawsphericalpoly_direct,paths,colors,_ref_extra=ex,$
   irgbt,stackmap=stackm,original_image=origim,maxstack=maxstack,$
   stacklist=stacklist,stackcount=stackc,verbose=verbose,do_stack=do_stack,$
-  weights=weights,stackweights=stackw,doweight=dow,stackindex=stacki,doi=doi
+  weights=weights,stackweights=stackw,doweight=dow,stackindex=stacki,doi=doi,$
+  pcount=pcount,e_map=e_map
   compile_opt idl2,logical_predicate,hidden
 
 
 if do_stack then begin
+  eh={fill:1,color:cgcolor('red')}
+  if n_elements(e_map) then map_set,/noborder,_strict_extra=e_map,e_horizon=eh else $
+   map_set,/noborder,/isotropic,/cylindrical,e_horizon=eh
   if dow && (n_elements(weights) ne n_elements(colors)) then weights=replicate(1d0,n_elements(colors))
   origim=tvrd()
   mapim=tvrd(channel=0)
+  maskrgb=tvrd()
+  mask=maskrgb eq cgcolor('red')
+  nmask=total(mask,/integer) 
   szm=size(mapim,/dimensions)
   stackc=lon64arr(szm)
+  if do_stack then pcount=lon64arr(n_elements(colors))
   if do_stack eq 1 then begin
     maxstack=n_elements(maxstack) ? maxstack : n_elements(paths)
     stackm=dblarr([maxstack,szm])+!values.d_nan
@@ -59,22 +67,28 @@ if do_stack then begin
   endelse
   foreach p,paths,ip do begin
     erase
-    polyfill,p[0,*],p[1,*],/data,_strict_extra=ex
+    polyfill,p[0,*],p[1,*],/data,_strict_extra=ex,color=cgcolor('blue')
     if verbose && ~(ip mod verbose) then print,ip
-    tmp=tvrd(channel=0)
+    tmprgb=tvrd()
+    tmp=mask and (tmprgb eq cgcolor('blue')) 
     w=where(tmp,wc)
+    if wc gt nmask/2 then begin
+      tmp=mask and (not tmp)
+      w=where(tmp,wc)
+    endif
+    pcount[ip]=wc
     if wc then begin
       cip=colors[ip]
       if dow then wip=weights[ip]
       if do_stack eq 1 then begin
         foreach pt,w do if stackc[pt] lt maxstack then stackm[pt*maxstack+stackc[pt]]=cip
         if dow then foreach pt,w do if stackc[pt] lt maxstack then stackw[pt*maxstack+stackc[pt]]=wip
-        if doi then foreach pt,w do if stackc[pt] lt maxstack then stacki[pt*maxstack+stackc[pt]]=pt
+        if doi then foreach pt,w do if stackc[pt] lt maxstack then stacki[pt*maxstack+stackc[pt]]=ip
       endif
       if do_stack eq 2 then begin
         foreach pt,w do (stackm[pt]).add,cip
         if dow then foreach pt,w do (stackw[pt]).add,wip
-        if doi then foreach pt,w do (stacki[pt]).add,pt
+        if doi then foreach pt,w do (stacki[pt]).add,ip
       endif
       stackc[w]+=1
     endif
@@ -108,7 +122,15 @@ pro pp_drawsphericalpoly_itool,paths,colors,_ref_extra=ex,$
   irgbt,polygon=poly,connectivity=conn,x=x,y=y,graphic=graphic
 compile_opt idl2,logical_predicate,hidden
 
-xy=paths.toarray(dimension=2)
+if (!version.release ge '8.2.3') then xy=paths.toarray(dimension=2) else begin
+  nxy=0LL & foreach p,paths do nxy+=(size(p,/dimensions))[1]
+  xy=dblarr(2,nxy)
+  count=0LL
+  foreach p,paths do begin
+    xy[count]=p[*]
+    count+=n_elements(p)
+  endforeach
+endelse
 conn=lonarr(n_elements(paths)+n_elements(xy)/2LL)
 count=0LL
 cols=lonarr(3,n_elements(xy)/2LL)
@@ -259,7 +281,7 @@ pro pp_drawsphericalpoly,lons,lats,colors,_ref_extra=ex,$
   x=x,y=y,connectivity=conn,fill=fill,$
   stackmap=stackm,original_image=origim,maxstack=maxstack,$
   stacklist=stacklist,stackcount=stackc,verbose=verbose,do_stack=do_stack,$
-  weights=weights,stackweights=stackw,stackindex=stacki
+  weights=weights,stackweights=stackw,stackindex=stacki,pcount=pcount
 compile_opt idl2,logical_predicate
 
 verbose=n_elements(verbose) ? verbose : 0
@@ -318,7 +340,7 @@ case 1 of
   (direct): pp_drawsphericalpoly_direct,paths,icolors,_strict_extra=ex,irgbt,$
     stackmap=stackm,original_image=origim,maxstack=maxstack,$
     stacklist=stacklist,stackcount=stackc,verbose=verbose,do_stack=do_stack,weights=weights,$
-    stackweights=stackw,doweight=dow,stackindex=stacki,doi=doi
+    stackweights=stackw,doweight=dow,stackindex=stacki,doi=doi,pcount=pcount
   else: pp_drawsphericalpoly_itool,paths,icolors,_strict_extra=ex,irgbt,polygon=polygon,$
     x=x,y=y,connectivity=conn,/graphic
 endcase
