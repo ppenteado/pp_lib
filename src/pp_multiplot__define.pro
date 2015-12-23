@@ -664,16 +664,32 @@ ex=(self.process_extras_plot(hash(ex),mindex,propagate)).tostruct()
 
 ;Create the plot object
 self.owindow.select,/clear ;Just to make this window the current one
-case n_params() of
-  0:ret=call_function(graphic_to_do,TEST=test, _EXTRA=ex,position=position,/current,$
-   xtickfont_size=bottom*12,ytickfont_size=left*12,xrange=(self.xranges)[column],yrange=(self.yranges)[line])
-  1:ret=call_function(graphic_to_do,arg1,TEST=test, _EXTRA=ex,position=position,/current,$
-   xtickfont_size=bottom*12,ytickfont_size=left*12,xrange=(self.xranges)[column],yrange=(self.yranges)[line])
-  2:ret=call_function(graphic_to_do,arg1,arg2,TEST=test, _EXTRA=ex,position=position,/current,$
-   xtickfont_size=bottom*12,ytickfont_size=left*12,xrange=(self.xranges)[column],yrange=(self.yranges)[line])
-  3:ret=call_function(graphic_to_do,arg1,arg2,arg3,TEST=test, _EXTRA=ex,position=position,/current,$
-   xtickfont_size=bottom*12,ytickfont_size=left*12,xrange=(self.xranges)[column],yrange=(self.yranges)[line])
-endcase
+if !version.release ge '8.2' then begin
+  case n_params() of
+    0:ret=call_function(graphic_to_do,TEST=test, _EXTRA=ex,position=position,/current,$
+     xshowtext=bottom*1,yshowtext=left*1,xrange=(self.xranges)[column],yrange=(self.yranges)[line])
+    1:ret=call_function(graphic_to_do,arg1,TEST=test, _EXTRA=ex,position=position,/current,$
+     xshowtext=bottom*1,yshowtext=left*1,xrange=(self.xranges)[column],yrange=(self.yranges)[line])
+    2:ret=call_function(graphic_to_do,arg1,arg2,TEST=test, _EXTRA=ex,position=position,/current,$
+     xshowtext=bottom*1,yshowtext=left*1,xrange=(self.xranges)[column],yrange=(self.yranges)[line])
+    3:ret=call_function(graphic_to_do,arg1,arg2,arg3,TEST=test, _EXTRA=ex,position=position,/current,$
+     xshowtext=bottom*1,yshowtext=left*1,xrange=(self.xranges)[column],yrange=(self.yranges)[line])
+  endcase
+  axes=ret.axes
+  axes[2].showtext=0
+  axes[3].showtext=0
+endif else begin
+  case n_params() of
+    0:ret=call_function(graphic_to_do,TEST=test, _EXTRA=ex,position=position,/current,$
+      xtickfont_size=bottom*12,ytickfont_size=left*12,xrange=(self.xranges)[column],yrange=(self.yranges)[line])
+    1:ret=call_function(graphic_to_do,arg1,TEST=test, _EXTRA=ex,position=position,/current,$
+      xtickfont_size=bottom*12,ytickfont_size=left*12,xrange=(self.xranges)[column],yrange=(self.yranges)[line])
+    2:ret=call_function(graphic_to_do,arg1,arg2,TEST=test, _EXTRA=ex,position=position,/current,$
+      xtickfont_size=bottom*12,ytickfont_size=left*12,xrange=(self.xranges)[column],yrange=(self.yranges)[line])
+    3:ret=call_function(graphic_to_do,arg1,arg2,arg3,TEST=test, _EXTRA=ex,position=position,/current,$
+      xtickfont_size=bottom*12,ytickfont_size=left*12,xrange=(self.xranges)[column],yrange=(self.yranges)[line])
+  endcase  
+endelse
 
 ;Set the [xy]range, if necessary
 if (~isa((self.xranges)[column])) then (self.xranges)[column]=ret.xrange
