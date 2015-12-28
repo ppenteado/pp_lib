@@ -314,25 +314,31 @@ endelse
 
 ;Get the spherical polygons
 paths=pp_sphericalpath(lons,lats,maxlength=maxlength,nsegments=nsegments);,/open)
-if n_elements(maxlength) then foreach p,paths,ip do begin
+foreach p,paths,ip do begin
   p[0,*]=(p[0,*]+360d0) mod 360
   w=where(p[0,*] gt 180d0,wc)
-  if wc then p[0,w]-=360d0
-  pdiffs=p[*,1:-1]-p[*,0:-2]
-  pdiffs=sqrt(total(pdiffs^2,1))
-  w=where(pdiffs gt maxlength*10d0,wc)
   if wc then begin
-    print,'found ',wc,' points to split polygon'
-    p0=p[*,0:w[0]]
-    p1=p[*,w[0]+1:-1]
-    paths[ip]=p0
-    paths.add,p1,ip+1
-    sz=size(colors,/n_dim)
-    colors=sz eq 1 ? [colors[0:ip],colors[ip:-1]] : [[colors[*,0:ip]],[colors[*,ip:-1]]]  
+    p[0,w]-=360d0
+    paths[ip]=p
   endif
-  ;s=sort(pdiffs)
-  ;pds=pdiffs[s]
-  ;w=where((pds[1:-1] gt 10d0*pds[0:-2]) and (pds[0:-2] gt 0d0),wc)
+;  if n_elements(maxlength) then begin 
+;
+;    pdiffs=p[*,1:-1]-p[*,0:-2]
+;    pdiffs=sqrt(total(pdiffs^2,1))
+;    w=where(pdiffs gt maxlength*10d0,wc)
+;;  if wc then begin
+;;    print,'found ',wc,' points to split polygon'
+;;    p0=p[*,0:w[0]]
+;;    p1=p[*,w[0]+1:-1]
+;;    paths[ip]=p0
+;;    paths.add,p1,ip+1
+;;    sz=size(colors,/n_dim)
+;;    colors=sz eq 1 ? [colors[0:ip],colors[ip:-1]] : [[colors[*,0:ip]],[colors[*,ip:-1]]]  
+;;  endif
+;  ;s=sort(pdiffs)
+;  ;pds=pdiffs[s]
+;  ;w=where((pds[1:-1] gt 10d0*pds[0:-2]) and (pds[0:-2] gt 0d0),wc)
+;  endif
 endforeach
 
 ;Map the colors, if a map is set
