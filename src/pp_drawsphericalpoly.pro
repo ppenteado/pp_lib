@@ -162,7 +162,8 @@ if keyword_set(graphic) then begin
     ;Done with the code from polygon.pro
     poly=oGraphic
 endif else begin
-  ipolygon,transpose([[x],[y]]),connectivity=conn,vert_colors=cols,_strict_extra=ex,/data,/visualization,object=poly
+  ipolygon,transpose([[x],[y]]),connectivity=conn,vert_colors=cols,_strict_extra=ex,$
+    /data,/visualization,object=poly,map_interpolate=0
 endelse
 
 end
