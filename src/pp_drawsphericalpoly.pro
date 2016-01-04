@@ -146,8 +146,24 @@ endforeach
 x=reform(xy[0,*])
 y=reform(xy[1,*])
 
-if keyword_set(graphic) then poly=polygon(x,y,connectivity=conn,vert_colors=cols,_strict_extra=ex,/data) else begin
-  ipolygon,transpose([[x],[y]]),connectivity=conn,vert_colors=cols,_strict_extra=ex,/data,/visualization,object=poly
+if keyword_set(graphic) then begin
+  ;poly=polygon(x,y,connectivity=conn,vert_colors=cols,_strict_extra=ex,/data)
+  ;The following lines were adapted from IDL's polygon.pro, because polygons do not have the property
+  ;map_interpolate registered, so the idlitvispolygon has to be created in here.
+  ;Without map_interpolate, ipolygon.pro's line 137 will cause points accross sides of the map to be connected
+  add2vis=1
+  iPolygon, transpose([[x],[y]]), $
+    DATA=1,$;data, DEVICE=device, NORMAL=normal, RELATIVE=relative, TARGET=target, $
+    OBJECT=oPolygon, VISUALIZATION=add2vis, SHADING=1, $
+    ;COLOR=color, LINESTYLE=linestyle, THICK=thick, _EXTRA=ex
+    map_interpolate=0,connectivity=conn,vert_colors=cols,_strict_extra=ex
+    Graphic__define
+    oGraphic = OBJ_NEW('Polygon', oPolygon)
+    ;Done with the code from polygon.pro
+    poly=oGraphic
+endif else begin
+  ipolygon,transpose([[x],[y]]),connectivity=conn,vert_colors=cols,_strict_extra=ex,$
+    /data,/visualization,object=poly,map_interpolate=0
 endelse
 
 end
