@@ -528,22 +528,24 @@ end
 ;-
 function pp_multiplot::image,arg1, arg2, arg3, TEST=test, _EXTRA=ex,$
  multi_index=mindex,xrange=xrange,yrange=yrange,propagate=propagate,$
- xendticks=xendticks,yendticks=yendticks
+ xendticks=xendticks,yendticks=yendticks,axis_style=axs,aspect_ratio=ar
 compile_opt idl2, logical_predicate
 graphic_to_do='image'
+axs=n_elements(axs) ? axs : 2
+ar=n_elements(ar) ? ar : 0
 case n_params() of
   0: ret=self.do_graphic(graphic_to_do=graphic_to_do, TEST=test, _EXTRA=ex,$
    multi_index=mindex,xrange=xrange,yrange=yrange,propagate=propagate,$
-   xendticks=xendticks,yendticks=yendticks)
+   xendticks=xendticks,yendticks=yendticks,axis_style=axs,aspect_ratio=ar)
   1: ret=self.do_graphic(graphic_to_do=graphic_to_do,arg1, TEST=test, _EXTRA=ex,$
    multi_index=mindex,xrange=xrange,yrange=yrange,propagate=propagate,$
-   xendticks=xendticks,yendticks=yendticks)
+   xendticks=xendticks,yendticks=yendticks,axis_style=axs,aspect_ratio=ar)
   2: ret=self.do_graphic(graphic_to_do=graphic_to_do,arg1, arg2, TEST=test, _EXTRA=ex,$
    multi_index=mindex,xrange=xrange,yrange=yrange,propagate=propagate,$
-   xendticks=xendticks,yendticks=yendticks)
+   xendticks=xendticks,yendticks=yendticks,axis_style=axs,aspect_ratio=ar)
   3: ret=self.do_graphic(graphic_to_do=graphic_to_do,arg1, arg2, arg3, TEST=test, _EXTRA=ex,$
    multi_index=mindex,xrange=xrange,yrange=yrange,propagate=propagate,$
-   xendticks=xendticks,yendticks=yendticks)
+   xendticks=xendticks,yendticks=yendticks,axis_style=axs,aspect_ratio=ar)
 endcase
 return,ret
 end
