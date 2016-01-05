@@ -148,8 +148,24 @@ endforeach
 x=reform(xy[0,*])
 y=reform(xy[1,*])
 
-if keyword_set(graphic) then poly=polygon(x,y,connectivity=conn,vert_colors=cols,_strict_extra=ex,/data) else begin
-  ipolygon,transpose([[x],[y]]),connectivity=conn,vert_colors=cols,_strict_extra=ex,/data,/visualization,object=poly
+if keyword_set(graphic) then begin
+  ;poly=polygon(x,y,connectivity=conn,vert_colors=cols,_strict_extra=ex,/data)
+  ;The following lines were adapted from IDL's polygon.pro, because polygons do not have the property
+  ;map_interpolate registered, so the idlitvispolygon has to be created in here.
+  ;Without map_interpolate, ipolygon.pro's line 137 will cause points accross sides of the map to be connected
+  add2vis=1
+  iPolygon, transpose([[x],[y]]), $
+    DATA=1,$;data, DEVICE=device, NORMAL=normal, RELATIVE=relative, TARGET=target, $
+    OBJECT=oPolygon, VISUALIZATION=add2vis, SHADING=1, $
+    ;COLOR=color, LINESTYLE=linestyle, THICK=thick, _EXTRA=ex
+    map_interpolate=0,connectivity=conn,vert_colors=cols,_strict_extra=ex
+    Graphic__define
+    oGraphic = OBJ_NEW('Polygon', oPolygon)
+    ;Done with the code from polygon.pro
+    poly=oGraphic
+endif else begin
+  ipolygon,transpose([[x],[y]]),connectivity=conn,vert_colors=cols,_strict_extra=ex,$
+    /data,/visualization,object=poly,map_interpolate=0
 endelse
 
 end
@@ -315,7 +331,33 @@ endif else begin
 endelse
 
 ;Get the spherical polygons
-paths=pp_sphericalpath(lons,lats,maxlength=maxlength,nsegments=nsegments,/open)
+paths=pp_sphericalpath(lons,lats,maxlength=maxlength,nsegments=nsegments);,/open)
+foreach p,paths,ip do begin
+  p[0,*]=(p[0,*]+360d0) mod 360
+  w=where(p[0,*] gt 180d0,wc)
+  if wc then begin
+    p[0,w]-=360d0
+    paths[ip]=p
+  endif
+;  if n_elements(maxlength) then begin 
+;
+;    pdiffs=p[*,1:-1]-p[*,0:-2]
+;    pdiffs=sqrt(total(pdiffs^2,1))
+;    w=where(pdiffs gt maxlength*10d0,wc)
+;;  if wc then begin
+;;    print,'found ',wc,' points to split polygon'
+;;    p0=p[*,0:w[0]]
+;;    p1=p[*,w[0]+1:-1]
+;;    paths[ip]=p0
+;;    paths.add,p1,ip+1
+;;    sz=size(colors,/n_dim)
+;;    colors=sz eq 1 ? [colors[0:ip],colors[ip:-1]] : [[colors[*,0:ip]],[colors[*,ip:-1]]]  
+;;  endif
+;  ;s=sort(pdiffs)
+;  ;pds=pdiffs[s]
+;  ;w=where((pds[1:-1] gt 10d0*pds[0:-2]) and (pds[0:-2] gt 0d0),wc)
+;  endif
+endforeach
 
 ;Map the colors, if a map is set
 if n_elements(rgbt) then begin
