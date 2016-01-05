@@ -65,6 +65,7 @@ if do_stack then begin
       foreach s,stacki,is do stacki[is]=list()
     endif
   endelse
+  print,'n paths: ',n_elements(paths)
   foreach p,paths,ip do begin
     erase
     polyfill,p[0,*],p[1,*],/data,_strict_extra=ex,color=cgcolor('blue')
@@ -73,7 +74,7 @@ if do_stack then begin
     tmp=mask and (tmprgb eq cgcolor('blue')) 
     w=where(tmp,wc)
     if wc gt nmask/2 then begin
-      tmp=mask and (not tmp)
+      ;tmp=mask and (not tmp)
       w=where(tmp,wc)
     endif
     pcount[ip]=wc
@@ -93,6 +94,7 @@ if do_stack then begin
       stackc[w]+=1
     endif
   endforeach
+  print,'done with the paths'
   return
 endif
   
