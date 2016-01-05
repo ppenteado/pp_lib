@@ -26,6 +26,17 @@
 ;      so that the quartiles are correctly calculated. By default, it is set. Setting
 ;      nan to zero saves time, but if the array contains non-finite values and nan
 ;      is zero, incorrect results may be returned.
+;      
+; :Examples:
+; 
+;   Create an array with 10 values between 0 and 9 and check on some of its quartiles::
+;   
+;     arr=dindgen(10)
+;     print,pp_quartile(a,[0.2d0,0.8d0])
+;     ;       2.0000000       8.0000000
+;     print,pp_quartile(a,[0.2d0,0.8d0],/cut)
+;     ;2.0000000       2.0000000       2.0000000       3.0000000       4.0000000       
+;     ;5.0000000       6.0000000       7.0000000       8.0000000       8.0000000 
 ;
 ; :Author: Paulo Penteado (http://www.ppenteado.net), Jan/2016
 ;-
