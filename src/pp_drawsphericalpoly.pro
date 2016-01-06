@@ -299,11 +299,12 @@ pro pp_drawsphericalpoly,lons,lats,colors,_ref_extra=ex,$
   x=x,y=y,connectivity=conn,fill=fill,$
   stackmap=stackm,original_image=origim,maxstack=maxstack,$
   stacklist=stacklist,stackcount=stackc,verbose=verbose,do_stack=do_stack,$
-  weights=weights,stackweights=stackw,stackindex=stacki,pcount=pcount
+  weights=weights,stackweights=stackw,stackindex=stacki,pcount=pcount,no_fix_lon=no_fix_lon
 compile_opt idl2,logical_predicate
 
 verbose=n_elements(verbose) ? verbose : 0
 do_stack=n_elements(do_stack) ? do_stack : 0
+no_fix_lon=keyword_set(no_fix_lon)
 
 ;Force the _tessellateshapes method in tessellateshapes_pp to be compiled after
 ;IDL's native method. 
@@ -332,7 +333,7 @@ endelse
 
 ;Get the spherical polygons
 paths=pp_sphericalpath(lons,lats,maxlength=maxlength,nsegments=nsegments);,/open)
-foreach p,paths,ip do begin
+if ~no_fix_lon then foreach p,paths,ip do begin
   p[0,*]=(p[0,*]+360d0) mod 360
   w=where(p[0,*] gt 180d0,wc)
   if wc then begin
