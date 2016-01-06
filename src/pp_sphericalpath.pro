@@ -140,7 +140,7 @@ if isa(lons,'list') && isa (lats,'list') then begin
       if ~no_fix_lon then begin
         tmp[0,*]=(tmp[0,*]+360d0) mod 360
         w=where(tmp[0,*] gt 180d0,wc)
-        if wc then tmp[0,wc]-=360d0
+        if wc then tmp[0,w]-=360d0
       endif
       count[i+1]=n_elements(tmp)/2LL
       ret[i]=ptr_new(tmp)
