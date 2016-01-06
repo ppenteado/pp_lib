@@ -105,7 +105,7 @@ function read_csv_pp_strings, Filename, $
 
   compile_opt idl2, hidden
 
-  ON_ERROR, 2         ;Return on error
+  ;ON_ERROR, 2         ;Return on error
 
   CATCH, err
   if (err ne 0) then begin
