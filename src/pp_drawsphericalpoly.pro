@@ -332,7 +332,7 @@ endif else begin
 endelse
 
 ;Get the spherical polygons
-paths=pp_sphericalpath(lons,lats,maxlength=maxlength,nsegments=nsegments);,/open)
+paths=pp_sphericalpath(lons,lats,maxlength=maxlength,nsegments=nsegments,no_fix_lon=no_fix_lon);,/open)
 if ~no_fix_lon then foreach p,paths,ip do begin
   p[0,*]=(p[0,*]+360d0) mod 360
   w=where(p[0,*] gt 180d0,wc)

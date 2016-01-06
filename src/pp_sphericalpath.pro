@@ -85,10 +85,12 @@
 ;
 ; :Author: Paulo Penteado (http://www.ppenteado.net), Nov/2014
 ;-
-function pp_sphericalpath,lons,lats,maxlength=maxlength,nsegments=nsegments,open=open,_ref_extra=ex
+function pp_sphericalpath,lons,lats,maxlength=maxlength,nsegments=nsegments,$
+  open=open,_ref_extra=ex,no_fix_lon=no_fix_lon
 compile_opt idl2,logical_predicate
 
 ;Defaults
+no_fix_lon=keyword_set(no_fix_lon)
 open=keyword_set(open)
 slats=size(lats,/dimensions)
 slons=size(lons,/dimensions)
@@ -134,7 +136,12 @@ if isa(lons,'list') && isa (lats,'list') then begin
           countt=n_elements(tmp)/2LL
           tmp=i eq 0 ? tmp[*,[0,countt-1]] : tmp[*,[countt-1]]
         endelse
-      endif else tmp=map_2points(ilons[i],ilats[i],ilons[i+1],ilats[i+1],dpath=maxlength,_strict_extra=ex)  
+      endif else tmp=map_2points(ilons[i],ilats[i],ilons[i+1],ilats[i+1],dpath=maxlength,_strict_extra=ex)
+      if ~no_fix_lon then begin
+        tmp[0,*]=(tmp[0,*]+360d0) mod 360
+        w=where(tmp[0,*] gt 180d0,wc)
+        if wc then tmp[0,wc]-=360d0
+      endif
       count[i+1]=n_elements(tmp)/2LL
       ret[i]=ptr_new(tmp)
     endfor
