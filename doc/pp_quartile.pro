@@ -26,21 +26,32 @@
 ;      so that the quartiles are correctly calculated. By default, it is set. Setting
 ;      nan to zero saves time, but if the array contains non-finite values and nan
 ;      is zero, incorrect results may be returned.
+;    sort: out,optional
+;      An array with the indices to sort the input array: s=sort(iarr)
+;    index: out,optional
+;      An array with the index in `s` corresponding to the quartiles selected. Useful
+;      to obtain indices in `iarr` that match some quartile level. See example
 ;      
 ; :Examples:
 ; 
 ;   Create an array with 10 values between 0 and 9 and check on some of its quartiles::
 ;   
-;     arr=dindgen(10)
+;     a=reverse(dindgen(10))
 ;     print,pp_quartile(a,[0.2d0,0.8d0])
 ;     ;       2.0000000       8.0000000
 ;     print,pp_quartile(a,[0.2d0,0.8d0],/cut)
-;     ;2.0000000       2.0000000       2.0000000       3.0000000       4.0000000       
-;     ;5.0000000       6.0000000       7.0000000       8.0000000       8.0000000 
+;     ;       8.0000000       8.0000000       7.0000000       6.0000000       5.0000000
+;     ;       4.0000000       3.0000000       2.0000000       2.0000000       2.0000000
+;     
+;    Obtain the elements of a which are below the 50% quartile::
+;    
+;      a_50=pp_quartile(a,0.5d0,index=ind,sort=s)
+;      print,a[s[0:ind]]
+;      ;       0.0000000       1.0000000       2.0000000       3.0000000       4.0000000       5.0000000
 ;
-; :Author: Paulo Penteado (http://www.ppenteado.net), Jan/2016
+; :Author: Paulo Penteado (`http://www.ppenteado.net <http://www.ppenteado.net>` ), Jan/2016
 ;-
-function pp_quartile,iarr,quart,cut=cut,nan=nan
+function pp_quartile,iarr,quart,cut=cut,nan=nan,index=index,sort=s
 compile_opt idl2,logical_predicate
   nan=n_elements(nan) ? nan : 1B
   if nan then begin
@@ -49,7 +60,8 @@ compile_opt idl2,logical_predicate
   endif else arr=iarr
   s=sort(arr)
   narr=n_elements(arr)
-  q=arr[s[0>round(narr*quart)<(narr-1)]]
+  index=0>round(narr*quart)<(narr-1)
+  q=arr[s[index]]
   if nan then arr=iarr
   return,keyword_set(cut) ? q[1]<arr>q[0] : q
 end

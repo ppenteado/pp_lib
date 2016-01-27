@@ -1,0 +1,134 @@
+digraph callgraph {
+  page="8.5,11"
+  node[fontsize=8,color=gray,fontcolor=grey]
+  edge[color=gray]
+  pp_gui__define[fontcolor=black,shape=plaintext]
+  multiplot_pp[fontcolor=black,shape=plaintext]
+  pp_gui::creategui[fontcolor=black,shape=plaintext]
+  pp_writencdf[fontcolor=black,shape=plaintext]
+  pp_quartile[fontcolor=black,shape=plaintext]
+  pp_buffered_vector::getsize[fontcolor=black,shape=plaintext]
+  pp_buffered_vector::getsize -> 
+  pp_convol_test[fontcolor=black,shape=plaintext]
+  pp_convol_test -> pp_resample
+  pp_convol_test -> pp_integral
+  al_legend_pp[fontcolor=black,shape=plaintext]
+  pp_multiplot__define[fontcolor=black,shape=plaintext]
+  idlitvispolygon::_tessellateshapes[fontcolor=black,shape=plaintext]
+  pp_gui::updatewindow[fontcolor=black,shape=plaintext]
+  pp_ilegendeditor::changeproperty[fontcolor=black,shape=plaintext]
+  pp_multiplot::getproperty[fontcolor=black,shape=plaintext]
+  pp_isnumber[fontcolor=black,shape=plaintext]
+  pp_isnumber -> 
+  pp_struct_unravel[fontcolor=black,shape=plaintext]
+  pp_cmfr__define[fontcolor=black,shape=plaintext]
+  pp_cmfr__define -> pp_cmfread
+  pp_cmfr::init[fontcolor=black,shape=plaintext]
+  pp_ocircle[fontcolor=black,shape=plaintext]
+  pp_readtxt[fontcolor=black,shape=plaintext]
+  pp_multiplot::close[fontcolor=black,shape=plaintext]
+  pp_plot_decideintervals[fontcolor=black,shape=plaintext]
+  pp_drawsphericalpoly[fontcolor=black,shape=plaintext]
+  pp_gui::init[fontcolor=black,shape=plaintext]
+  pp_ilegendeditor__define[fontcolor=black,shape=plaintext]
+  pp_gui_example::init[fontcolor=black,shape=plaintext]
+  pp_writepars[fontcolor=black,shape=plaintext]
+  pp_structtomysql[fontcolor=black,shape=plaintext]
+  pp_readfits__define[fontcolor=black,shape=plaintext]
+  pp_rise_set[fontcolor=black,shape=plaintext]
+  pp_rise_set -> observatory
+  pp_rise_set -> ten
+  pp_rise_set -> ct2lst
+  pp_rise_set -> jdcnv
+  pp_structtransp[fontcolor=black,shape=plaintext]
+  pp_readfits::getproperty[fontcolor=black,shape=plaintext]
+  pp_gui_example::creategui[fontcolor=black,shape=plaintext]
+  pp_gui_example__define[fontcolor=black,shape=plaintext]
+  pp_ixyouts[fontcolor=black,shape=plaintext]
+  pp_ixyouts -> 
+  pp_readfits::init[fontcolor=black,shape=plaintext]
+  pp_cmap_show[fontcolor=black,shape=plaintext]
+  pp_extractfields[fontcolor=black,shape=plaintext]
+  pp_extractfields -> 
+  pp_buffered_vector::append[fontcolor=black,shape=plaintext]
+  pp_buffered_vector::append -> 
+  pp_multiplot::save[fontcolor=black,shape=plaintext]
+  pp_dos2unix[fontcolor=black,shape=plaintext]
+  pp_gui::eventhandler[fontcolor=black,shape=plaintext]
+  histogram_pp[fontcolor=black,shape=plaintext]
+  pp_histogramlines[fontcolor=black,shape=plaintext]
+  pp_multiplot::setproperty[fontcolor=black,shape=plaintext]
+  pp_cmfr::cleanup[fontcolor=black,shape=plaintext]
+  pp_buffered_vector::getbuffersize[fontcolor=black,shape=plaintext]
+  pp_buffered_vector::getbuffersize -> 
+  pp_cmfr::getvariable[fontcolor=black,shape=plaintext]
+  pp_colortripletolong[fontcolor=black,shape=plaintext]
+  pp_ilegend::init[fontcolor=black,shape=plaintext]
+  pp_getcurrentlights[fontcolor=black,shape=plaintext]
+  pp_getcurrentlights -> pp_gettoolid
+  pp_osquare[fontcolor=black,shape=plaintext]
+  pp_sphericalpath[fontcolor=black,shape=plaintext]
+  pp_multiplot::plot[fontcolor=black,shape=plaintext]
+  pp_multiplot::contour[fontcolor=black,shape=plaintext]
+  write_csv_convert_pp_original[fontcolor=black,shape=plaintext]
+  pp_itool_save[fontcolor=black,shape=plaintext]
+  pp_itool_save -> 
+  pp_gauss_from_fwhm[fontcolor=black,shape=plaintext]
+  pp_ilegendeditor::init[fontcolor=black,shape=plaintext]
+  pp_structtomysql__typename[fontcolor=black,shape=plaintext]
+  pp_gui::setproperty[fontcolor=black,shape=plaintext]
+  pp_azdif[fontcolor=black,shape=plaintext]
+  pp_azdif -> 
+  pp_contour_paths[fontcolor=black,shape=plaintext]
+  pp_readncdfs[fontcolor=black,shape=plaintext]
+  pp_cmap[fontcolor=black,shape=plaintext]
+  pp_appendcolumn[fontcolor=black,shape=plaintext]
+  pp_buffered_vector::getcount[fontcolor=black,shape=plaintext]
+  pp_buffered_vector::getcount -> 
+  pp_buffered_vector__define[fontcolor=black,shape=plaintext]
+  pp_buffered_vector__define -> 
+  pp_readpars[fontcolor=black,shape=plaintext]
+  pp_readpars -> pp_isnumber
+  pp_buffered_vector::getdata[fontcolor=black,shape=plaintext]
+  pp_buffered_vector::getdata -> 
+  pp_buffered_vector::init[fontcolor=black,shape=plaintext]
+  pp_buffered_vector::init -> 
+  pp_longtocolortriple[fontcolor=black,shape=plaintext]
+  read_csv_pp[fontcolor=black,shape=plaintext]
+  pp_resample_test[fontcolor=black,shape=plaintext]
+  pp_resample_test -> pp_resample
+  pp_resample_test -> pp_integral
+  pp_integral[fontcolor=black,shape=plaintext]
+  pp_convol[fontcolor=black,shape=plaintext]
+  pp_convol -> pp_resample
+  pp_convol -> pp_integral
+  pp_ilegend__define[fontcolor=black,shape=plaintext]
+  pp_readfits::_overloadbracketsrightside[fontcolor=black,shape=plaintext]
+  pp_multiplot::sync_axes[fontcolor=black,shape=plaintext]
+  pp_structsubset[fontcolor=black,shape=plaintext]
+  read_csv_pp_strings[fontcolor=black,shape=plaintext]
+  pp_lorentz_from_fwhm[fontcolor=black,shape=plaintext]
+  pp_cmfr::getall[fontcolor=black,shape=plaintext]
+  pp_gettoolid[fontcolor=black,shape=plaintext]
+  pp_multiplot::init[fontcolor=black,shape=plaintext]
+  pp_multiplot::image[fontcolor=black,shape=plaintext]
+  pp_multiplot::do_graphic[fontcolor=black,shape=plaintext]
+  pp_ilegendedit[fontcolor=black,shape=plaintext]
+  read_csv_fieldnames[fontcolor=black,shape=plaintext]
+  pp_cmfread[fontcolor=black,shape=plaintext]
+  write_csv_pp_original[fontcolor=black,shape=plaintext]
+  pp_colorbar_range[fontcolor=black,shape=plaintext]
+  pp_colorbar_range -> 
+  pp_parsetext[fontcolor=black,shape=plaintext]
+  tessellateshapes_pp[fontcolor=black,shape=plaintext]
+  pp_multiplot::getposition[fontcolor=black,shape=plaintext]
+  pp_mysqlquery[fontcolor=black,shape=plaintext]
+  pp_resample[fontcolor=black,shape=plaintext]
+  pp_resample -> pp_integral
+  write_csv_pp[fontcolor=black,shape=plaintext]
+  pp_ilegend::additem[fontcolor=black,shape=plaintext]
+  pp_gui_example::updatewindow[fontcolor=black,shape=plaintext]
+  pp_plot[fontcolor=black,shape=plaintext]
+  pp_gui::getproperty[fontcolor=black,shape=plaintext]
+  pp_locate[fontcolor=black,shape=plaintext]
+}
