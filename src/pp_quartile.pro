@@ -26,7 +26,7 @@
 ;      so that the quartiles are correctly calculated. By default, it is set. Setting
 ;      nan to zero saves time, but if the array contains non-finite values and nan
 ;      is zero, incorrect results may be returned.
-;    s: out,optional
+;    sort: out,optional
 ;      An array with the indices to sort the input array: s=sort(iarr)
 ;    index: out,optional
 ;      An array with the index in `s` corresponding to the quartiles selected. Useful
