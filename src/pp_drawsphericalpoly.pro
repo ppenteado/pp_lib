@@ -31,9 +31,41 @@ pro pp_drawsphericalpoly_direct,paths,colors,_ref_extra=ex,$
   irgbt,stackmap=stackm,original_image=origim,maxstack=maxstack,$
   stacklist=stacklist,stackcount=stackc,verbose=verbose,do_stack=do_stack,$
   weights=weights,stackweights=stackw,doweight=dow,stackindex=stacki,doi=doi,$
-  pcount=pcount,e_map=e_map
+  pcount=pcount,e_map=e_map,map_structure=mapstr
   compile_opt idl2,logical_predicate,hidden
 
+
+if n_elements(mapstr) then begin
+  lcolors=list(colors,/extract)
+  ip=0
+  while ip lt n_elements(paths) do begin
+    p=paths[ip]
+    xy=map_proj_forward(reform(p[0,*]),reform(p[1,*]),map_structure=mapstr,polygons=polygons)
+    if n_elements(xy) lt 6 then begin
+      ;print,ip
+      paths.remove,ip
+      lcolors.remove,ip
+      continue
+    endif
+    if n_elements(polygons) ne n_elements(p[0,*])+1 then begin
+      po=pp_connectivity_list(polygons)
+      if n_elements(po) ne 1 then begin
+        paths.remove,ip
+        oc=lcolors[ip]
+        lcolors.remove,ip
+        ipo=ip
+        foreach ppo,po do if n_elements(ppo) ge 3 then begin
+          lcolors.add,oc,ip
+          paths.add,xy[*,ppo],ip++
+        endif
+      endif else begin
+        paths[ip]=xy
+      endelse
+    endif else paths[ip]=xy
+    ip++
+  endwhile
+  colors=lcolors.toarray()
+endif
 
 if do_stack then begin
   eh={fill:1,color:cgcolor('red')}
@@ -299,7 +331,8 @@ pro pp_drawsphericalpoly,lons,lats,colors,_ref_extra=ex,$
   x=x,y=y,connectivity=conn,fill=fill,$
   stackmap=stackm,original_image=origim,maxstack=maxstack,$
   stacklist=stacklist,stackcount=stackc,verbose=verbose,do_stack=do_stack,$
-  weights=weights,stackweights=stackw,stackindex=stacki,pcount=pcount,no_fix_lon=no_fix_lon
+  weights=weights,stackweights=stackw,stackindex=stacki,pcount=pcount,no_fix_lon=no_fix_lon,$
+  map_structure=mapstr
 compile_opt idl2,logical_predicate
 
 verbose=n_elements(verbose) ? verbose : 0
@@ -385,7 +418,7 @@ case 1 of
   (direct): pp_drawsphericalpoly_direct,paths,icolors,_strict_extra=ex,irgbt,$
     stackmap=stackm,original_image=origim,maxstack=maxstack,$
     stacklist=stacklist,stackcount=stackc,verbose=verbose,do_stack=do_stack,weights=weights,$
-    stackweights=stackw,doweight=dow,stackindex=stacki,doi=doi,pcount=pcount
+    stackweights=stackw,doweight=dow,stackindex=stacki,doi=doi,pcount=pcount,map_structure=mapstr
   else: pp_drawsphericalpoly_itool,paths,icolors,_strict_extra=ex,irgbt,polygon=polygon,$
     x=x,y=y,connectivity=conn,/graphic
 endcase
