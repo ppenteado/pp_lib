@@ -14,7 +14,7 @@
 ;       rights reserved. Unauthorized reproduction is prohibited.
 
 ;----------------------------------------------------------------------------
-function write_csv_convert_pp_original, data
+function write_csv_convert_pp_original, data,noquote=noquote
 
   compile_opt idl2, hidden
 
@@ -23,7 +23,16 @@ function write_csv_convert_pp_original, data
     7: begin   ; string type
       ; Always surround all strings with quotes, to avoid problems with
       ; commas and whitespace.
-      data1 = '"'+data+'"'
+      if noquote then begin
+        data1=data
+        nq=where((strpos(data,'"') ge 0) or (strpos(data,',') ge 0),nnq)
+        if (nnq gt 0) then begin
+          d=data[nq]
+        endif
+          data1[nq]='"'+data[nq]+'"'
+      endif else begin
+        data1 = '"'+data+'"'
+      endelse
       ; Now look for double-quote chars, which need to be escaped.
       hasQuote = WHERE(STRPOS(data, '"') ge 0, nQuote)
       if (nQuote gt 0) then begin
@@ -107,7 +116,7 @@ end
 ;
 ;-
 pro write_csv_pp_original, Filename, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, $
-  HEADER=header, TABLE_HEADER=tableHeader,append=append
+  HEADER=header, TABLE_HEADER=tableHeader,append=append,noquote=noquote
 
   compile_opt idl2
 
@@ -207,28 +216,28 @@ pro write_csv_pp_original, Filename, Data1, Data2, Data3, Data4, Data5, Data6, D
     strCopy = STRARR(nfields, nrows)
 
     for i=0,nfields-1 do begin
-      strCopy[i,*] = WRITE_CSV_CONVERT_pp_original(Data1.(i))
+      strCopy[i,*] = WRITE_CSV_CONVERT_pp_original(Data1.(i),noquote=noquote)
     endfor
 
     PRINTF, lun, strCopy, FORMAT=format
 
   endif else if (isArray) then begin  ; Two-dimensional array
 
-    PRINTF, lun, WRITE_CSV_CONVERT_pp_original(Data1), FORMAT=format
+    PRINTF, lun, WRITE_CSV_CONVERT_pp_original(Data1,noquote=noquote), FORMAT=format
 
   endif else begin  ; Individual data arguments
 
     strCopy = STRARR(nfields, nrows)
 
     switch (nfields) of
-      8: strCopy[7,*] = WRITE_CSV_CONVERT_pp_original(Data8)
-      7: strCopy[6,*] = WRITE_CSV_CONVERT_pp_original(Data7)
-      6: strCopy[5,*] = WRITE_CSV_CONVERT_pp_original(Data6)
-      5: strCopy[4,*] = WRITE_CSV_CONVERT_pp_original(Data5)
-      4: strCopy[3,*] = WRITE_CSV_CONVERT_pp_original(Data4)
-      3: strCopy[2,*] = WRITE_CSV_CONVERT_pp_original(Data3)
-      2: strCopy[1,*] = WRITE_CSV_CONVERT_pp_original(Data2)
-      1: strCopy[0,*] = WRITE_CSV_CONVERT_pp_original(Data1)
+      8: strCopy[7,*] = WRITE_CSV_CONVERT_pp_original(Data8,noquote=noquote)
+      7: strCopy[6,*] = WRITE_CSV_CONVERT_pp_original(Data7,noquote=noquote)
+      6: strCopy[5,*] = WRITE_CSV_CONVERT_pp_original(Data6,noquote=noquote)
+      5: strCopy[4,*] = WRITE_CSV_CONVERT_pp_original(Data5,noquote=noquote)
+      4: strCopy[3,*] = WRITE_CSV_CONVERT_pp_original(Data4,noquote=noquote)
+      3: strCopy[2,*] = WRITE_CSV_CONVERT_pp_original(Data3,noquote=noquote)
+      2: strCopy[1,*] = WRITE_CSV_CONVERT_pp_original(Data2,noquote=noquote)
+      1: strCopy[0,*] = WRITE_CSV_CONVERT_pp_original(Data1,noquote=noquote)
     endswitch
 
     PRINTF, lun, strCopy, FORMAT=format
@@ -284,6 +293,9 @@ end
 ;      Used to split the file writing into ``divide`` pieces. This is useful to save memory, since
 ;      IDL's ``write_csv`` creates a temporary string array with the whole file contents, before writing it
 ;      to the file, and that array can be several times larger than the input array.
+;    noquote: in, optional, default=0
+;      If set, string fields that do not contain commas or double-quotes will not
+;      be quoted. If not set, all string fields are quoted.
 ;    _ref_extra: in, out, optional
 ;      Any other parameters are passed, unaltered, to / from write_csv.
 ;
@@ -309,9 +321,10 @@ end
 ; :Author: Paulo Penteado (`http://www.ppenteado.net <http://www.ppenteado.net>`), Feb/2013
 ;-
 pro write_csv_pp,file,data1,data2,data3,data4,data5,data6,data7,data8,titlesfromfields=tf,$
-  divide=divide,_ref_extra=ex,verbose=verbose
+  divide=divide,_ref_extra=ex,verbose=verbose,noquote=noquote
   compile_opt idl2,logical_predicate
   
+  noquote=keyword_set(noquote)
   divide=n_elements(divide) ? divide : 1LL
   nrows=n_elements(data1)
   blocksize=ceil(nrows*1d0/divide)
@@ -333,7 +346,7 @@ pro write_csv_pp,file,data1,data2,data3,data4,data5,data6,data7,data8,titlesfrom
         n_elements(data6) ? data6[fr:lr] : !null ,$
         n_elements(data7) ? data7[fr:lr] : !null ,$
         n_elements(data8) ? data8[fr:lr] : !null ,$
-        _strict_extra=ex,header=(i eq 0 ? header : !null),append=i
+        _strict_extra=ex,header=(i eq 0 ? header : !null),append=i,noquote=noquote
     endif else begin
       write_csv_pp_original,file,(u ? data0[fr:lr] : data1[fr:lr]),$
         n_elements(data2) ? data2[fr:lr] : !null ,$
@@ -343,7 +356,7 @@ pro write_csv_pp,file,data1,data2,data3,data4,data5,data6,data7,data8,titlesfrom
         n_elements(data6) ? data6[fr:lr] : !null ,$
         n_elements(data7) ? data7[fr:lr] : !null ,$
         n_elements(data8) ? data8[fr:lr] : !null ,$
-        _strict_extra=ex,append=i
+        _strict_extra=ex,append=i,noquote=noquote
     endelse
   endfor
 end

@@ -324,7 +324,7 @@ end
 ;
 ; :Author: Paulo Penteado (http://www.ppenteado.net), Aug/2015
 ;-
-pro pp_drawsphericalpoly,lons,lats,colors,_ref_extra=ex,$
+pro pp_drawsphericalpoly,ilons,ilats,icolors,_ref_extra=ex,$
   rgb_table=rgbt,$
   cg=cg,graphics=graphics,itool=itool,direct=direct,$
   maxlength=maxlength,nsegments=nsegments,polygon=polygon,$
@@ -334,6 +334,28 @@ pro pp_drawsphericalpoly,lons,lats,colors,_ref_extra=ex,$
   weights=weights,stackweights=stackw,stackindex=stacki,pcount=pcount,no_fix_lon=no_fix_lon,$
   map_structure=mapstr
 compile_opt idl2,logical_predicate
+
+
+
+if (size(ilons,/n_dimensions) eq 1) and ~isa(ilons,'list') then begin
+  lons=[[ilons],[ilons]]
+  lats=[[ilats],[ilats]]
+endif else begin
+  lons=ilons
+  lats=ilats
+endelse
+
+nic=n_elements(icolors)
+if size(lons,/n_dimensions) eq 2 then begin
+  np=(size(lons,/dimensions))[1]
+endif else np=n_elements(lons)
+
+if nic eq 0 then begin
+  colors=dindgen(np)
+  rgbt=0
+endif else begin
+  colors=icolors
+endelse
 
 verbose=n_elements(verbose) ? verbose : 0
 do_stack=n_elements(do_stack) ? do_stack : 0
