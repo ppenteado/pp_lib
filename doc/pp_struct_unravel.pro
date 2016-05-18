@@ -68,6 +68,7 @@ if ~count then return,(testonly ? 0 : str)
       ret=create_struct(ret,tn[i]+'_'+tnf[j],s.(j))
     endfor
   endelse
+  if n_elements(str) gt 1 then ret=pp_structtransp(ret)
   return,ret
   
   
