@@ -1140,7 +1140,7 @@ if arg_present(ygap) then ygap=self.ygap
 ;Filter and process the [x/y]properties from the extras
 extras=hash(ex)
 ex=self.process_extras_properties(extras,get=props,_extra=ex)
-ex=ex.keys() ;Extras to pass on
+ex=(ex.keys()).toarray() ;Extras to pass on
 
 ;Get all other properties from the window object
 ;This block is to provide the right title object, due to a bug in IDL 8.0's igetid that breaks title in window objects.
