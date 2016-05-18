@@ -295,26 +295,43 @@ end
 ;      to the file, and that array can be several times larger than the input array.
 ;    noquote: in, optional, default=0
 ;      If set, string fields that do not contain commas or double-quotes will not
-;      be quoted. If not set, all string fields are quoted.
+;      be quoted. If not set (default), all string fields are quoted.
 ;    _ref_extra: in, out, optional
 ;      Any other parameters are passed, unaltered, to / from write_csv.
 ;
 ; :Examples:
 ;    Make a simple structure array and write it to a csv file::
 ;
-;      s={a:1,b:{c:2.5,d:-9,e:0},f:1.8}
+;      s={a:1,b:{c:2.5,d:-9,e:0},f:1.8,g:'h'}
 ;      s2=replicate(s,2)
 ;      s2[1].a=-1
 ;      s2[1].f=-1.8
+;      s2[1].g='h,i'
 ;      write_csv_pp,'write_csv_pp_test.csv',s2,/titlesfromfields
 ;
 ;    Which result in a file with:
 ;
-;    ;A,B_C,B_D,B_E,F
-;
-;    ;1,2.50000,-9,0,1.80000
-;
-;    ;-1,2.50000,-9,0,-1.80000
+;    A,B_C,B_D,B_E,F,G
+;    
+;    1,2.50000,-9,0,1.80000,"h"
+;    
+;    -1,2.50000,-9,0,-1.80000,"h,i"
+;    
+;    Compare with using the `noquote` keyword:
+;    
+;      write_csv_pp,'write_csv_pp_test.csv',s2,/titlesfromfields,/noquote
+;      
+;    Which produces
+;    
+;    A,B_C,B_D,B_E,F,G
+;    
+;    1,2.50000,-9,0,1.80000,h
+;    
+;    -1,2.50000,-9,0,-1.80000,"h,i"
+;    
+;    On the first row, the string (the last column) is unquoted. On the second,
+;    it is still quoted because it contains a comma; without this quote, it
+;    would look like the row has an extra column.
 ;
 ; :Requires: `pp_struct_unravel`
 ;
