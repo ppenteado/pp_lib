@@ -314,6 +314,24 @@ end
 ;        map_set,0d0,0d0,/cylindrical,/isotropic,/grid,/label
 ;        pp_drawsphericalpoly,lons,lats,colors,rgb_table=13,/direct
 ;      .. image:: pp_drawsphericalpoly_ex4.png
+;
+;      Now, let's make some data that spans the tricky region around the pole::
+;
+;        ;make up the coordinates for the coordinates of 3 rectangular fields of view near the north pole:
+;        lons=[[20d0,240d0,260d0,0d0],[80d0,180d0,200d0,60d0],[50d0,210d0,230d0,30d0]]
+;        lats=[[62d0,60d0,60d0,62d0],[62d0,60d0,60d0,62d0],[65d0,67d0,67d0,65d0]]
+;        ;make up some pixel values to determine the color used to fill the 3 rectangles
+;        pixvals=dindgen(3)
+;
+;      Create an imap to plot these polygons::
+;
+;        imap,map_proj='orthographic',center_lat=60d0
+;
+;      Draw the polygons::
+;
+;        pp_drawsphericalpoly,lons,lats,pixvals,rgb_table=13,/itool
+;      .. image:: pp_drawsphericalpoly_ex5.png
+;
 ;      
 ; :Requires:
 ;   If Coyote Graphics are to be used, the `Coyote Library <http://www.idlcoyote.com/documents/programs.php#COYOTE_LIBRARY_DOWNLOAD>` 
