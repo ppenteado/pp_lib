@@ -69,8 +69,11 @@ endif
 
 if do_stack then begin
   eh={fill:1,color:cgcolor('red')}
-  if n_elements(e_map) then map_set,/noborder,_strict_extra=e_map,e_horizon=eh else $
-   map_set,/noborder,/isotropic,/cylindrical,e_horizon=eh
+  if n_elements(e_map) then begin
+     p0lon=0 & p0lat=0 & mrot=0
+    _e_map=pp_structextract(e_map,p0lat=p0lat,p0lon=p0lon,rot=mrot)
+    map_set,p0lat,p0lon,mrot,/noborder,_strict_extra=_e_map,e_horizon=eh
+  endif else map_set,/noborder,/isotropic,/cylindrical,e_horizon=eh
   if dow && (n_elements(weights) ne n_elements(colors)) then weights=replicate(1d0,n_elements(colors))
   origim=tvrd()
   mapim=tvrd(channel=0)
@@ -331,6 +334,18 @@ end
 ;
 ;        pp_drawsphericalpoly,lons,lats,pixvals,rgb_table=13,/itool
 ;      .. image:: pp_drawsphericalpoly_ex5.png
+;      
+;      Now, an example with overlapping polygons, making an overlap map and taking the
+;      mean of the values on overlap::
+;      
+;        lats=[[62d0,60d0,60d0,62d0],[62d0,60d0,60d0,62d0],[70d0,72d0,72d0,70d0]]
+;        lons=[[40d0,220d0,250d0,0d0],[80d0,180d0,200d0,60d0],[50d0,200d0,240d0,20d0]]
+;        pixvals=dindgen(3)
+;        m=map('orthographic',center_lat=60d0)
+;        ms=m.getmapstructure()
+;        pp_drawsphericalpoly,lons,lats,pixvals,rgb_table=13,/direct,map_structure=ms,do_stack=1,map_count=mc
+;        
+;        
 ;
 ;      
 ; :Requires:
