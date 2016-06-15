@@ -31,7 +31,7 @@ pro pp_drawsphericalpoly_direct,paths,colors,_ref_extra=ex,$
   irgbt,stackmap=stackm,original_image=origim,maxstack=maxstack,$
   stacklist=stacklist,stackcount=stackc,verbose=verbose,do_stack=do_stack,$
   weights=weights,stackweights=stackw,doweight=dow,stackindex=stacki,doi=doi,$
-  pcount=pcount,e_map=e_map,map_structure=mapstr
+  pcount=pcount,e_map=e_map,map_structure=mapstr,image_mapstr=image_mapstr,xsize=xsize,ysize=ysize
   compile_opt idl2,logical_predicate,hidden
 
 
@@ -68,14 +68,25 @@ if n_elements(mapstr) then begin
 endif
 
 if do_stack then begin
-  eh={fill:1,color:cgcolor('red')}
+  oldmap=!map
   if n_elements(e_map) then begin
      p0lon=0 & p0lat=0 & mrot=0
     _e_map=pp_structextract(e_map,p0lat=p0lat,p0lon=p0lon,rot=mrot)
+    olddev=!d.name
+    set_plot,'z'
+    origim=tvrd()
+    ;device,get_decomposed=origdec
+    eh={fill:1,color:cgcolor('red')}
+    xsize=n_elements(xsize) ? xsize : 640
+    ysize=n_elements(ysize) ? ysize : 480
+    device,set_resolution=[xsize,ysize]
     map_set,p0lat,p0lon,mrot,/noborder,_strict_extra=_e_map,e_horizon=eh
-  endif else map_set,/noborder,/isotropic,/cylindrical,e_horizon=eh
+  endif else begin
+    eh={fill:1,color:cgcolor('red')}
+    map_set,/noborder,/isotropic,/cylindrical,e_horizon=eh
+  endelse
   if dow && (n_elements(weights) ne n_elements(colors)) then weights=replicate(1d0,n_elements(colors))
-  origim=tvrd()
+  
   mapim=tvrd(channel=0)
   maskrgb=tvrd()
   mask=maskrgb eq cgcolor('red')
@@ -130,6 +141,13 @@ if do_stack then begin
     endif
   endforeach
   print,'done with the paths'
+  if n_elements(olddev) then begin
+    device,set_resolution=size(origim,/dimensions);,decomposed=origdec
+    tv,origim
+    set_plot,olddev
+  endif
+  image_mapstr=!map
+  !map=oldmap
   return
 endif
   
@@ -147,7 +165,6 @@ if n_elements(irgbt) then begin
 endif else begin
   foreach p,paths,ip do polyfill,p[0,*],p[1,*],color=colors[ip],/data,_strict_extra=ex
 endelse
-
 end
 
 ;+
@@ -365,7 +382,7 @@ pro pp_drawsphericalpoly,ilons,ilats,icolors,_ref_extra=ex,$
   stackmap=stackm,original_image=origim,maxstack=maxstack,$
   stacklist=stacklist,stackcount=stackc,verbose=verbose,do_stack=do_stack,$
   weights=weights,stackweights=stackw,stackindex=stacki,pcount=pcount,no_fix_lon=no_fix_lon,$
-  map_structure=mapstr
+  map_structure=mapstr,image_mapstr=image_mapstr,xsize=xsize,ysize=ysize
 compile_opt idl2,logical_predicate
 
 
@@ -473,7 +490,8 @@ case 1 of
   (direct): pp_drawsphericalpoly_direct,paths,icolors,_strict_extra=ex,irgbt,$
     stackmap=stackm,original_image=origim,maxstack=maxstack,$
     stacklist=stacklist,stackcount=stackc,verbose=verbose,do_stack=do_stack,weights=weights,$
-    stackweights=stackw,doweight=dow,stackindex=stacki,doi=doi,pcount=pcount,map_structure=mapstr
+    stackweights=stackw,doweight=dow,stackindex=stacki,doi=doi,pcount=pcount,map_structure=mapstr,$
+    image_mapstr=image_mapstr,xsize=xsize,ysize=ysize
   else: pp_drawsphericalpoly_itool,paths,icolors,_strict_extra=ex,irgbt,polygon=polygon,$
     x=x,y=y,connectivity=conn,/graphic
 endcase
