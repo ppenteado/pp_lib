@@ -234,17 +234,17 @@ end
 ;    the spherical polygon.
 ;
 ; :Params:
-;    lons: in, required
+;    ilons: in, required
 ;      An array of longitudes for the vertices which are to be connected by a path made of great circles.
 ;      Must be in degrees. Multiple polygons are supported in two different ways: 1) If all N polygons have 
 ;      the same number of vertices (M), lons can be given as a [M,N] array. 2) For arbitrary numbers of vertices,
 ;      lons is given as a list, where each list element is an array of vertices for one polygon.
-;    lats: in, required
+;    ilats: in, required
 ;      An array of latitudes for the vertices which are to be connected by a path made of great circles.
 ;      Must be in degrees. Multiple polygons are supported in two different ways: 1) If all N polygons have 
 ;      the same number of vertices (M), lats can be given as a [M,N] array. 2) For arbitrary numbers of vertices,
 ;      lons is given as a list, where each list element is an array of vertices for one polygon.
-;    colors: in, required
+;    icolors: in, required
 ;      An array with the color to be used to draw/fill the polygons. If `rgb_table`
 ;      is not given, this array is assumed to contain the colors in the system used
 ;      by the kind of plotting selected: either a [3,M] array of color triplets, one triple
@@ -298,6 +298,56 @@ end
 ;      If Coyote Graphics' cgpolygon is being used, this keyword determines if
 ;      the polygons are drawn just as outlines, or should be filled (outlines and
 ;      fills share the same colors).
+;    do_stack: in, optional, default=0
+;      If set to 1, instead of drawing the polygons on the graphics device, a z-buffer will be used
+;      to draw polygons in an invisible direct graphics window, which are used to generate a map of
+;      where each polygon falls (`stackmap`). This will probably be more clearly explained by the
+;      examples below. Note that setting do_stack to a value higher than 1 is not the same as setting
+;      it to 1: other values turn on alternative stack algorithms, which at this time are still
+;      experimental and thus not yet documented.
+;    stackmap: out, optional
+;      if `do_stack` is turned on, this argument returns the stacked map generated. If the algorithm
+;      selected is `do_stack`=1, this will be an array of dimensions [`maxstack`,`xsize`,`ysize`], where
+;      [`xsize`,`ysize`] are the dimensions of the map created, and `maxstack` specifies the maximum number
+;      layers the map stack can have. At a given location [x,y] in the map, the values stackmap[*,x,y]
+;      are all the values present in `icolors` that fell onto that location on the map. The argument
+;      `stackcount` is often useful, as it records how many layers were stacked at each location in the
+;      map. This will probably be more clearly explained by the examples below.
+;    stackcount: out, optional
+;      if `do_stack` is turned on, this argument returns the count of stacked layers in the `stackmap`
+;      generated. At a given location [x,y] in the map, stackcount[x,y] is the number of polygons that
+;      fell on that map location (the number of layers in `stackmap` at that location). This will probably
+;      be more clearly explained by the examples below.
+;    maxstack: in, optional
+;      Specifies the first dimension of the `stackmap` array, which is the maximum number of layers being
+;      tracked falling on each location on the map. If not set, it defaults to the number of polygons provided
+;      in `ilons`, `ilats`, `icolors`. If there are many polygons, it is probably wise to specify a smaller
+;      value for maxstack, to avoid using too much memory. Use `stackcount` to check that at no location in the
+;      map there were polygons missed because that location had more overlapping layers than could fit into
+;      `stackmap`: if `stackcount` is everywhere smaller than or equal to `maxstack`, no polygons were lost in
+;      `stackmap`.
+;    stackindex: out, optional
+;      If `do_stack` is turned on, this argument returns the an array similar to `stackmap`, but its values
+;      are the indices to of the polygons that fall on each location, instead of being the intensities (`icolors`).
+;    xsize: in, optional, default=640
+;      If `do_stack` is set to 1, this specifies the width of the map to generate (see `stackmap`).  
+;    ysize: in, optional, default=480
+;      If `do_stack` is set to 1, this specifies the height of the map to generate (see `stackmap`).
+;    e_map: in, optional
+;      If `do_stack` is set to 1, set this argument to a structure containing any parameters to be passed
+;      to map_set, which is used to define the map projection used to make `stackmap`. This will probably
+;      be more clearly explained by the examples below.
+;    image_mapstr: out, optional
+;      If `do_stack` is set to 1, this argument will return the map structure created by map_set, which is
+;      used to define the map projection used to make `stackmap`.
+;    pcount: out, optional
+;      If `do_stack` is turned on, this argument returns the an array with the number of map pixels covered
+;      by each polygon.
+;    weights: in, optional
+;    stackweights: out, optional
+;    verbose: in, optional
+;    
+;      
 ;      
 ;    :Examples:
 ;    
@@ -405,7 +455,7 @@ pro pp_drawsphericalpoly,ilons,ilats,icolors,_ref_extra=ex,$
   stackmap=stackm,original_image=origim,maxstack=maxstack,$
   stacklist=stacklist,stackcount=stackc,verbose=verbose,do_stack=do_stack,$
   weights=weights,stackweights=stackw,stackindex=stacki,pcount=pcount,no_fix_lon=no_fix_lon,$
-  map_structure=mapstr,image_mapstr=image_mapstr,xsize=xsize,ysize=ysize
+  map_structure=mapstr,image_mapstr=image_mapstr,xsize=xsize,ysize=ysize,e_map=e_map
 compile_opt idl2,logical_predicate
 
 
@@ -514,7 +564,7 @@ case 1 of
     stackmap=stackm,original_image=origim,maxstack=maxstack,$
     stacklist=stacklist,stackcount=stackc,verbose=verbose,do_stack=do_stack,weights=weights,$
     stackweights=stackw,doweight=dow,stackindex=stacki,doi=doi,pcount=pcount,map_structure=mapstr,$
-    image_mapstr=image_mapstr,xsize=xsize,ysize=ysize
+    image_mapstr=image_mapstr,xsize=xsize,ysize=ysize,e_map=e_map
   else: pp_drawsphericalpoly_itool,paths,iicolors,_strict_extra=ex,irgbt,polygon=polygon,$
     x=x,y=y,connectivity=conn,/graphic
 endcase
