@@ -31,7 +31,8 @@ pro pp_drawsphericalpoly_direct,paths,colors,_ref_extra=ex,$
   irgbt,stackmap=stackm,original_image=origim,maxstack=maxstack,$
   stacklist=stacklist,stackcount=stackc,verbose=verbose,do_stack=do_stack,$
   weights=weights,stackweights=stackw,doweight=dow,stackindex=stacki,doi=doi,$
-  pcount=pcount,e_map=e_map,map_structure=mapstr,image_mapstr=image_mapstr,xsize=xsize,ysize=ysize
+  pcount=pcount,e_map=e_map,map_structure=mapstr,image_mapstr=image_mapstr,$
+  xsize=xsize,ysize=ysize
   compile_opt idl2,logical_predicate,hidden
 
 
@@ -354,13 +355,35 @@ end
 ;      
 ;      Now, an example with overlapping polygons, making an overlap map and taking the
 ;      mean of the values on overlap::
+;        
+;        lats=[[62d0,60d0,60d0,62d0],[62d0,60d0,60d0,62d0],[70d0,72d0,72d0,70d0],[80d0,87d0,87d0,80d0]]
+;        lons=[[40d0,220d0,250d0,0d0],[80d0,180d0,200d0,60d0],[50d0,200d0,240d0,20d0],[70d0,70d0,95d0,95d0]]
+;        pixvals=[0d0,-1d0,-3d0,2d0]
+;        
+;      First, take a look at the overlayed polygons::
+;        
+;        m=map('orthographic',center_lat=30d0)
+;      .. image:: pp_drawsphericalpoly_ex6.png
+;        
+;      Now, make the stack map::
 ;      
-;        lats=[[62d0,60d0,60d0,62d0],[62d0,60d0,60d0,62d0],[70d0,72d0,72d0,70d0]]
-;        lons=[[40d0,220d0,250d0,0d0],[80d0,180d0,200d0,60d0],[50d0,200d0,240d0,20d0]]
-;        pixvals=dindgen(3)
-;        m=map('orthographic',center_lat=60d0)
-;        ms=m.getmapstructure()
-;        pp_drawsphericalpoly,lons,lats,pixvals,rgb_table=13,/direct,map_structure=ms,do_stack=1,map_count=mc
+;        pp_drawsphericalpoly,lons,lats,pixvals,rgb_table=13
+;        limit=[-90,-180,90,180]
+;        e_map={cylindrical:1,noborder:1,xmargin:0,ymargin:0,limit:limit,isotropic:1}
+;        pp_drawsphericalpoly,lons,lats,pixvals,do_stack=1,stackc=stackc,e_map=e_map,xsize=3000,ysize=1500,maxstack=4,stackm=stackm
+;        
+;      Look at the coverage map - an array where each value is the number of polygons that fell onto that place on the map::
+;      
+;        im0=image(stackc,map_projection='equirectangular',grid_units=2,image_location=limit[[1,0]],image_dimensions=[limit[3]-limit[1],limit[2]-limit[0]],dimensions=[900,500],color='cyan',aspect_ratio=5.,limit=[30,-180,90,180])
+;        im1=image(stackc,map_projection='orthographic',center_lat=30,grid_units=2,image_location=limit[[1,0]],image_dimensions=[limit[3]-limit[1],limit[2]-limit[0]],,dimensions=[900,500],color='cyan',rgb_table=13)
+;      .. image:: pp_drawsphericalpoly_ex7.png
+;      .. image:: pp_drawsphericalpoly_ex8.png
+;        
+;      Make an average image from stackm, by taking then mean over the stack (first) dimension::
+;      
+;        stackmean=mean(stackm,dimension=1,/nan)
+;        im2=image(stackmean,map_projection='orthographic',center_lat=90,grid_units=2,image_location=limit[[1,0]],image_dimensions=[limit[3]-limit[1],limit[2]-limit[0]],dimensions=[900,500],color='cyan',rgb_table=13)
+;      .. image:: pp_drawsphericalpoly_ex9.png
 ;        
 ;        
 ;
@@ -478,21 +501,21 @@ if n_elements(rgbt) then begin
     endelse
   endelse
   ;Map the input colors into the [0,255] range
-  icolors=bytscl(colors)
+  iicolors=bytscl(colors)
 endif else begin
-  icolors=colors  
+  iicolors=colors  
 endelse
 
 ;Call the drawing function
 case 1 of
-  (cg): pp_drawsphericalpoly_cg,paths,icolors,_strict_extra=ex,irgbt,fill=fill
-  (itool): pp_drawsphericalpoly_itool,paths,icolors,_strict_extra=ex,irgbt;,fill=fill
-  (direct): pp_drawsphericalpoly_direct,paths,icolors,_strict_extra=ex,irgbt,$
+  (cg): pp_drawsphericalpoly_cg,paths,iicolors,_strict_extra=ex,irgbt,fill=fill
+  (itool): pp_drawsphericalpoly_itool,paths,iicolors,_strict_extra=ex,irgbt;,fill=fill
+  (direct): pp_drawsphericalpoly_direct,paths,iicolors,_strict_extra=ex,irgbt,$
     stackmap=stackm,original_image=origim,maxstack=maxstack,$
     stacklist=stacklist,stackcount=stackc,verbose=verbose,do_stack=do_stack,weights=weights,$
     stackweights=stackw,doweight=dow,stackindex=stacki,doi=doi,pcount=pcount,map_structure=mapstr,$
     image_mapstr=image_mapstr,xsize=xsize,ysize=ysize
-  else: pp_drawsphericalpoly_itool,paths,icolors,_strict_extra=ex,irgbt,polygon=polygon,$
+  else: pp_drawsphericalpoly_itool,paths,iicolors,_strict_extra=ex,irgbt,polygon=polygon,$
     x=x,y=y,connectivity=conn,/graphic
 endcase
 
