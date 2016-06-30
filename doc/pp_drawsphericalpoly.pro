@@ -31,7 +31,8 @@ pro pp_drawsphericalpoly_direct,paths,colors,_ref_extra=ex,$
   irgbt,stackmap=stackm,original_image=origim,maxstack=maxstack,$
   stacklist=stacklist,stackcount=stackc,verbose=verbose,do_stack=do_stack,$
   weights=weights,stackweights=stackw,doweight=dow,stackindex=stacki,doi=doi,$
-  pcount=pcount,e_map=e_map,map_structure=mapstr
+  pcount=pcount,e_map=e_map,map_structure=mapstr,image_mapstr=image_mapstr,$
+  xsize=xsize,ysize=ysize
   compile_opt idl2,logical_predicate,hidden
 
 
@@ -68,11 +69,25 @@ if n_elements(mapstr) then begin
 endif
 
 if do_stack then begin
-  eh={fill:1,color:cgcolor('red')}
-  if n_elements(e_map) then map_set,/noborder,_strict_extra=e_map,e_horizon=eh else $
-   map_set,/noborder,/isotropic,/cylindrical,e_horizon=eh
+  oldmap=!map
+  if n_elements(e_map) then begin
+     p0lon=0 & p0lat=0 & mrot=0
+    _e_map=pp_structextract(e_map,p0lat=p0lat,p0lon=p0lon,rot=mrot)
+    olddev=!d.name
+    set_plot,'z'
+    origim=tvrd()
+    ;device,get_decomposed=origdec
+    eh={fill:1,color:cgcolor('red')}
+    xsize=n_elements(xsize) ? xsize : 640
+    ysize=n_elements(ysize) ? ysize : 480
+    device,set_resolution=[xsize,ysize]
+    map_set,p0lat,p0lon,mrot,/noborder,_strict_extra=_e_map,e_horizon=eh
+  endif else begin
+    eh={fill:1,color:cgcolor('red')}
+    map_set,/noborder,/isotropic,/cylindrical,e_horizon=eh
+  endelse
   if dow && (n_elements(weights) ne n_elements(colors)) then weights=replicate(1d0,n_elements(colors))
-  origim=tvrd()
+  
   mapim=tvrd(channel=0)
   maskrgb=tvrd()
   mask=maskrgb eq cgcolor('red')
@@ -127,6 +142,13 @@ if do_stack then begin
     endif
   endforeach
   print,'done with the paths'
+  if n_elements(olddev) then begin
+    device,set_resolution=size(origim,/dimensions);,decomposed=origdec
+    tv,origim
+    set_plot,olddev
+  endif
+  image_mapstr=!map
+  !map=oldmap
   return
 endif
   
@@ -144,7 +166,6 @@ if n_elements(irgbt) then begin
 endif else begin
   foreach p,paths,ip do polyfill,p[0,*],p[1,*],color=colors[ip],/data,_strict_extra=ex
 endelse
-
 end
 
 ;+
@@ -213,17 +234,17 @@ end
 ;    the spherical polygon.
 ;
 ; :Params:
-;    lons: in, required
+;    ilons: in, required
 ;      An array of longitudes for the vertices which are to be connected by a path made of great circles.
 ;      Must be in degrees. Multiple polygons are supported in two different ways: 1) If all N polygons have 
 ;      the same number of vertices (M), lons can be given as a [M,N] array. 2) For arbitrary numbers of vertices,
 ;      lons is given as a list, where each list element is an array of vertices for one polygon.
-;    lats: in, required
+;    ilats: in, required
 ;      An array of latitudes for the vertices which are to be connected by a path made of great circles.
 ;      Must be in degrees. Multiple polygons are supported in two different ways: 1) If all N polygons have 
 ;      the same number of vertices (M), lats can be given as a [M,N] array. 2) For arbitrary numbers of vertices,
 ;      lons is given as a list, where each list element is an array of vertices for one polygon.
-;    colors: in, required
+;    icolors: in, required
 ;      An array with the color to be used to draw/fill the polygons. If `rgb_table`
 ;      is not given, this array is assumed to contain the colors in the system used
 ;      by the kind of plotting selected: either a [3,M] array of color triplets, one triple
@@ -277,6 +298,56 @@ end
 ;      If Coyote Graphics' cgpolygon is being used, this keyword determines if
 ;      the polygons are drawn just as outlines, or should be filled (outlines and
 ;      fills share the same colors).
+;    do_stack: in, optional, default=0
+;      If set to 1, instead of drawing the polygons on the graphics device, a z-buffer will be used
+;      to draw polygons in an invisible direct graphics window, which are used to generate a map of
+;      where each polygon falls (`stackmap`). This will probably be more clearly explained by the
+;      examples below. Note that setting do_stack to a value higher than 1 is not the same as setting
+;      it to 1: other values turn on alternative stack algorithms, which at this time are still
+;      experimental and thus not yet documented.
+;    stackmap: out, optional
+;      if `do_stack` is turned on, this argument returns the stacked map generated. If the algorithm
+;      selected is `do_stack`=1, this will be an array of dimensions [`maxstack`,`xsize`,`ysize`], where
+;      [`xsize`,`ysize`] are the dimensions of the map created, and `maxstack` specifies the maximum number
+;      layers the map stack can have. At a given location [x,y] in the map, the values stackmap[*,x,y]
+;      are all the values present in `icolors` that fell onto that location on the map. The argument
+;      `stackcount` is often useful, as it records how many layers were stacked at each location in the
+;      map. This will probably be more clearly explained by the examples below.
+;    stackcount: out, optional
+;      if `do_stack` is turned on, this argument returns the count of stacked layers in the `stackmap`
+;      generated. At a given location [x,y] in the map, stackcount[x,y] is the number of polygons that
+;      fell on that map location (the number of layers in `stackmap` at that location). This will probably
+;      be more clearly explained by the examples below.
+;    maxstack: in, optional
+;      Specifies the first dimension of the `stackmap` array, which is the maximum number of layers being
+;      tracked falling on each location on the map. If not set, it defaults to the number of polygons provided
+;      in `ilons`, `ilats`, `icolors`. If there are many polygons, it is probably wise to specify a smaller
+;      value for maxstack, to avoid using too much memory. Use `stackcount` to check that at no location in the
+;      map there were polygons missed because that location had more overlapping layers than could fit into
+;      `stackmap`: if `stackcount` is everywhere smaller than or equal to `maxstack`, no polygons were lost in
+;      `stackmap`.
+;    stackindex: out, optional
+;      If `do_stack` is turned on, this argument returns the an array similar to `stackmap`, but its values
+;      are the indices to of the polygons that fall on each location, instead of being the intensities (`icolors`).
+;    xsize: in, optional, default=640
+;      If `do_stack` is set to 1, this specifies the width of the map to generate (see `stackmap`).  
+;    ysize: in, optional, default=480
+;      If `do_stack` is set to 1, this specifies the height of the map to generate (see `stackmap`).
+;    e_map: in, optional
+;      If `do_stack` is set to 1, set this argument to a structure containing any parameters to be passed
+;      to map_set, which is used to define the map projection used to make `stackmap`. This will probably
+;      be more clearly explained by the examples below.
+;    image_mapstr: out, optional
+;      If `do_stack` is set to 1, this argument will return the map structure created by map_set, which is
+;      used to define the map projection used to make `stackmap`.
+;    pcount: out, optional
+;      If `do_stack` is turned on, this argument returns the an array with the number of map pixels covered
+;      by each polygon.
+;    weights: in, optional
+;    stackweights: out, optional
+;    verbose: in, optional
+;    
+;      
 ;      
 ;    :Examples:
 ;    
@@ -331,6 +402,40 @@ end
 ;
 ;        pp_drawsphericalpoly,lons,lats,pixvals,rgb_table=13,/itool
 ;      .. image:: pp_drawsphericalpoly_ex5.png
+;      
+;      Now, an example with overlapping polygons, making an overlap map and taking the
+;      mean of the values on overlap::
+;        
+;        lats=[[62d0,60d0,60d0,62d0],[62d0,60d0,60d0,62d0],[70d0,72d0,72d0,70d0],[80d0,87d0,87d0,80d0]]
+;        lons=[[40d0,220d0,250d0,0d0],[80d0,180d0,200d0,60d0],[50d0,200d0,240d0,20d0],[70d0,70d0,95d0,95d0]]
+;        pixvals=[0d0,-1d0,-3d0,2d0]
+;        
+;      First, take a look at the overlayed polygons::
+;        
+;        m=map('orthographic',center_lat=30d0)
+;      .. image:: pp_drawsphericalpoly_ex6.png
+;        
+;      Now, make the stack map::
+;      
+;        pp_drawsphericalpoly,lons,lats,pixvals,rgb_table=13
+;        limit=[-90,-180,90,180]
+;        e_map={cylindrical:1,noborder:1,xmargin:0,ymargin:0,limit:limit,isotropic:1}
+;        pp_drawsphericalpoly,lons,lats,pixvals,do_stack=1,stackc=stackc,e_map=e_map,xsize=3000,ysize=1500,maxstack=4,stackm=stackm
+;        
+;      Look at the coverage map - an array where each value is the number of polygons that fell onto that place on the map::
+;      
+;        im0=image(stackc,map_projection='equirectangular',grid_units=2,image_location=limit[[1,0]],image_dimensions=[limit[3]-limit[1],limit[2]-limit[0]],dimensions=[900,500],color='cyan',aspect_ratio=5.,limit=[30,-180,90,180])
+;        im1=image(stackc,map_projection='orthographic',center_lat=30,grid_units=2,image_location=limit[[1,0]],image_dimensions=[limit[3]-limit[1],limit[2]-limit[0]],,dimensions=[900,500],color='cyan',rgb_table=13)
+;      .. image:: pp_drawsphericalpoly_ex7.png
+;      .. image:: pp_drawsphericalpoly_ex8.png
+;        
+;      Make an average image from stackm, by taking then mean over the stack (first) dimension::
+;      
+;        stackmean=mean(stackm,dimension=1,/nan)
+;        im2=image(stackmean,map_projection='orthographic',center_lat=90,grid_units=2,image_location=limit[[1,0]],image_dimensions=[limit[3]-limit[1],limit[2]-limit[0]],dimensions=[900,500],color='cyan',rgb_table=13)
+;      .. image:: pp_drawsphericalpoly_ex9.png
+;        
+;        
 ;
 ;      
 ; :Requires:
@@ -350,7 +455,7 @@ pro pp_drawsphericalpoly,ilons,ilats,icolors,_ref_extra=ex,$
   stackmap=stackm,original_image=origim,maxstack=maxstack,$
   stacklist=stacklist,stackcount=stackc,verbose=verbose,do_stack=do_stack,$
   weights=weights,stackweights=stackw,stackindex=stacki,pcount=pcount,no_fix_lon=no_fix_lon,$
-  map_structure=mapstr
+  map_structure=mapstr,image_mapstr=image_mapstr,xsize=xsize,ysize=ysize,e_map=e_map
 compile_opt idl2,logical_predicate
 
 
@@ -446,20 +551,21 @@ if n_elements(rgbt) then begin
     endelse
   endelse
   ;Map the input colors into the [0,255] range
-  icolors=bytscl(colors)
+  iicolors=bytscl(colors)
 endif else begin
-  icolors=colors  
+  iicolors=colors  
 endelse
 
 ;Call the drawing function
 case 1 of
-  (cg): pp_drawsphericalpoly_cg,paths,icolors,_strict_extra=ex,irgbt,fill=fill
-  (itool): pp_drawsphericalpoly_itool,paths,icolors,_strict_extra=ex,irgbt;,fill=fill
-  (direct): pp_drawsphericalpoly_direct,paths,icolors,_strict_extra=ex,irgbt,$
+  (cg): pp_drawsphericalpoly_cg,paths,iicolors,_strict_extra=ex,irgbt,fill=fill
+  (itool): pp_drawsphericalpoly_itool,paths,iicolors,_strict_extra=ex,irgbt;,fill=fill
+  (direct): pp_drawsphericalpoly_direct,paths,iicolors,_strict_extra=ex,irgbt,$
     stackmap=stackm,original_image=origim,maxstack=maxstack,$
     stacklist=stacklist,stackcount=stackc,verbose=verbose,do_stack=do_stack,weights=weights,$
-    stackweights=stackw,doweight=dow,stackindex=stacki,doi=doi,pcount=pcount,map_structure=mapstr
-  else: pp_drawsphericalpoly_itool,paths,icolors,_strict_extra=ex,irgbt,polygon=polygon,$
+    stackweights=stackw,doweight=dow,stackindex=stacki,doi=doi,pcount=pcount,map_structure=mapstr,$
+    image_mapstr=image_mapstr,xsize=xsize,ysize=ysize,e_map=e_map
+  else: pp_drawsphericalpoly_itool,paths,iicolors,_strict_extra=ex,irgbt,polygon=polygon,$
     x=x,y=y,connectivity=conn,/graphic
 endcase
 
