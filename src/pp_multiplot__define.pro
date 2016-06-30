@@ -987,8 +987,14 @@ if (endticks ne 3) then begin
   if axes eq obj_new() then axes=[]
   foreach el, axes do if isa(el.tickname) then begin
     tn=el.tickname
-    if ((endticks eq 0)||(endticks eq 2)) then tn[0]=''
-    if ((endticks eq 0)||(endticks eq 1)) then tn[-1]=''
+    range=ax eq 'x' ? el.xrange : el.yrange
+    if range[1] ge range[0] then begin
+      r0=0 & r1=-1
+    endif else begin
+      r0=-1 & r1=0
+    endelse
+    if ((endticks eq 0)||(endticks eq 2)) then tn[r0]=''
+    if ((endticks eq 0)||(endticks eq 1)) then tn[r1]=''
     el.tickname=tn
   endif
 endif
@@ -1039,8 +1045,8 @@ bottom=line eq (self.nlines-1) ;Is this plot on the bottom line?
 top=line eq 0 ;Is this plot on the bottom line?
 fullwidth=1d0-self.global_margin[0]-self.global_margin[2]
 fullheight=1d0-self.global_margin[1]-self.global_margin[3]
-shiftsx=(self.global_margin[0]+[0d0,total(self.cwidths.toarray(),/cumulative)])*fullwidth
-shiftsy=(self.global_margin[1]+1d0-[0d0,total(self.lheights.toarray(),/cumulative)])*fullheight
+shiftsx=self.global_margin[0]+([0d0,total(self.cwidths.toarray(),/cumulative)])*fullwidth
+shiftsy=self.global_margin[1]+(1d0-[0d0,total(self.lheights.toarray(),/cumulative)])*fullheight
 return,[shiftsx[column]+(left ? 0d0 : self.xgap/2d0),shiftsy[line+1]+(bottom ? 0d0 : self.ygap/2d0),$
   shiftsx[column+1]-(right ? 0d0 : self.xgap/2d0),shiftsy[line]-(top ? 0d0 : self.ygap/2d0)]
 
