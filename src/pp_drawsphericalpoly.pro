@@ -99,7 +99,7 @@ if do_stack then begin
     maxstack=n_elements(maxstack) ? maxstack : n_elements(paths)
     stackm=dblarr([maxstack,szm])+!values.d_nan
     if dow then stackw=stackm
-    if doi then stacki=stackm
+    if doi then stacki=lonarr([maxstack,szm])-1
   endif else begin
     stackm=objarr(szm)
     foreach s,stackm,is do stackm[is]=list()
