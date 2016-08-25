@@ -117,6 +117,39 @@
 ;    
 ;      m.save,'pp_multiplot_ex5.png',resolution=100
 ;      m.close
+;      
+;    A simple example, with plots made with a set of default properties, so that
+;    it is not necessary to repeat them for each plot::
+;    
+;      props={color:'red',symbol:'square',sym_filled:1}
+;      m=pp_multiplot(multi_layout=[1,3],graphproperties=props)
+;      p1=m.plot(/test)
+;      p2=m.plot(/test)
+;      p3=m.plot(/test,color='blue')
+;      
+;    The result would be
+;
+;     .. image:: pp_multiplot_ex6.png
+;     
+;    Now, we will change the yrange in one of the panels. This will cause the
+;    axis tick labels to get recalculated, resulting in overlapping labels. This
+;    would happen even if the new yrange was identical to the current range, beacuse
+;    setting the range triggers a recalculation of the ticks::
+;    
+;       p2.yrange=[-1,2]
+;       
+;    Which looks like
+;    
+;    .. image:: pp_multiplot_ex7.png
+;    
+;    The fix to that is a call to the `updateranges` method::
+;    
+;      m.updateranges
+;      
+;    Which will make the plot look like
+;    
+;    .. image:: pp_multiplot_ex8.png
+;       
 ;
 ; :Version: 20101027
 ; 
@@ -170,12 +203,20 @@
 ;      Any extra properties are just passed to window() (the init method of the
 ;      window class). The most common to be used is probably going to be dimensions.
 ;      See the help on window() for more information.
+;    graphproperties: in, optional
+;      Use this keyword to provide a set of graphic keywords to be passed to all
+;      individual graphs by default. It should be in the form of a structure, with
+;      each field containing the value for the keyword of corresponding name.
+;      If an individual graph's creation specifies a value for a keyword given in
+;      graphproperties, it will take precendece over the graphproperties value.
+;      See examples above. 
 ;      
 ;-
 function pp_multiplot::init,_REF_EXTRA=ex,$
  multi_layout=mlayout,title=gtitle,global_xtitle=gxtitle,global_ytitle=gytitle,$
  global_margin=gmargin,columnwidths=cwidths,lineheights=lheights,absolute_dims=absolute,$
- xgap=xgap,ygap=ygap,xsupressdivision=xsupressdivision,ysupressdivision=ysupressdivision
+ xgap=xgap,ygap=ygap,xsupressdivision=xsupressdivision,ysupressdivision=ysupressdivision,$
+ graphproperties=graphproperties
 compile_opt idl2, logical_predicate
 
 if (n_elements(mlayout) ne 2) then begin
@@ -242,6 +283,7 @@ if (n_elements(gtitle) ne 0) then self.setproperty,title=gtitle
 if (n_elements(xsupressdivision) ne 0) then self.xsupressdivision=xsupressdivision
 if (n_elements(ysupressdivision) ne 0) then self.ysupressdivision=ysupressdivision
 
+self.graphproperties=n_elements(graphproperties) ? hash(graphproperties) : hash()
 
 return,isa(self.owindow,'graphicswin') || isa(self.owindow,'graphicsbuffer')
 end
@@ -663,6 +705,12 @@ endif
 
 ;Process the axes properties in the extra parameters
 ex=(self.process_extras_plot(hash(ex),mindex,propagate)).tostruct()
+;Combine extras with default properties
+if self.graphproperties then begin
+  exh=hash(ex)
+  exh=self.graphproperties+exh
+  ex=exh.tostruct()
+endif
 
 ;Create the plot object
 self.owindow.select,/clear ;Just to make this window the current one
@@ -1496,5 +1544,6 @@ compile_opt idl2, logical_predicate
  xproperties:list(),yproperties:list(),$ ;x/y axes roperties for each column/line in the grid
  xendticks:list(),yendticks:list(),$ ;x/y endticks for each plot in the grid
  xgap:0d0,ygap:0d0,$ ;x/y gap between plots
- xsupressdivision:0B,ysupressdivision:0B} ;Supress the lines between plots in x/y
+ xsupressdivision:0B,ysupressdivision:0B,$ ;Supress the lines between plots in x/y
+ graphproperties:obj_new()} ;Default properties for individual graphs
 end
