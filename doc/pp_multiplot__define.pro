@@ -1430,6 +1430,21 @@ end
 
 ;+
 ; :Description:
+;    This method should be called after one or more plots in the multiplot had
+;    its axes changed in a way that caused its ticks to be recomputed (setting the
+;    range, for instance), so that the end ticks get fixed.
+;
+;-
+pro pp_multiplot::updateranges
+compile_opt idl2,logical_predicate
+foreach el,self.oplots,iel do if isa(el) then begin
+  self.setendticks,self.xendticks[iel],el,'x'
+  self.setendticks,self.yendticks[iel],el,'y'
+endif
+end
+
+;+
+; :Description:
 ;    Simple wrapper for window::close, to make pp_multiplot objects
 ;    look almost like they inherited the window class they use. For more details,
 ;    see the help on the close method of IDL's Graphics.
