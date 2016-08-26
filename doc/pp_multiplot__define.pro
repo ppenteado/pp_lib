@@ -1486,6 +1486,8 @@ end
 pro pp_multiplot::updateranges
 compile_opt idl2,logical_predicate
 foreach el,self.oplots,iel do if isa(el) then begin
+  el['yaxis'].tickname=''
+  el['xaxis'].tickname=''
   self.setendticks,self.xendticks[iel],el,'x'
   self.setendticks,self.yendticks[iel],el,'y'
 endif
