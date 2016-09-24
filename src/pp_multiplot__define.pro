@@ -216,7 +216,7 @@ function pp_multiplot::init,_REF_EXTRA=ex,$
  multi_layout=mlayout,title=gtitle,global_xtitle=gxtitle,global_ytitle=gytitle,$
  global_margin=gmargin,columnwidths=cwidths,lineheights=lheights,absolute_dims=absolute,$
  xgap=xgap,ygap=ygap,xsupressdivision=xsupressdivision,ysupressdivision=ysupressdivision,$
- graphproperties=graphproperties
+ graphproperties=graphproperties,xtickratio=xtickratio,ytickratio=ytickratio
 compile_opt idl2, logical_predicate
 
 if (n_elements(mlayout) ne 2) then begin
@@ -282,6 +282,8 @@ if (n_elements(gytitle) eq 1) then self.setproperty,global_ytitle=gytitle
 if (n_elements(gtitle) ne 0) then self.setproperty,title=gtitle
 if (n_elements(xsupressdivision) ne 0) then self.xsupressdivision=xsupressdivision
 if (n_elements(ysupressdivision) ne 0) then self.ysupressdivision=ysupressdivision
+if (n_elements(xtickratio) ne 0) then self.xtickratio=xtickratio
+if (n_elements(ytickratio) ne 0) then self.ytickratio=ytickratio
 
 self.graphproperties=n_elements(graphproperties) ? hash(graphproperties) : hash()
 
@@ -688,8 +690,16 @@ propagate=(n_elements(propagate) eq 1) ? propagate : 1
 position=self.getposition(mindex,bottom=bottom,left=left,top=top,right=right,column=column,line=line)
 
 ;By default, supress end x/y ticks in plots that are in the middle of the columns/lines
-xendticks=n_elements(xendticks) eq 1 ? xendticks : right ? 3 : 1
-yendticks=n_elements(yendticks) eq 1 ? yendticks : top ? 3 : 1   
+if n_elements(xendticks) ne 1 then begin
+  xendticks=right ? 3 : 1
+  fixxticks=right ? 0 : 1
+endif else fixxticks=0
+if n_elements(yendticks) ne 1 then begin
+  yendticks=top ? 3 : 1
+  fixyticks=top ? 0 : 1
+endif else fixyticks=0
+;xendticks=n_elements(xendticks) eq 1 ? xendticks : right ? 3 : 1
+;yendticks=n_elements(yendticks) eq 1 ? yendticks : top ? 3 : 1   
 
 ;Update the [xy]range, if provided
 if (n_elements(xrange) eq 2) then begin
@@ -746,6 +756,10 @@ if (~isa((self.xranges)[column])) then (self.xranges)[column]=ret.xrange
 if (~isa((self.yranges)[line])) then (self.yranges)[line]=ret.yrange
 if ~array_equal((self.xranges)[column],ret.xrange) then (self.xranges)[column]=ret.xrange
 if ~array_equal((self.yranges)[line],ret.yrange) then (self.yranges)[line]=ret.yrange
+
+
+
+
 ;Remove the first/last labels, if necessary
 self.setendticks,xendticks,ret,'x'
 self.setendticks,yendticks,ret,'y'
@@ -1030,6 +1044,22 @@ end
 ;-
 pro pp_multiplot::setendticks,endticks,opl,ax
 compile_opt idl2,logical_predicate,hidden
+
+;If necessary, revise x/yendticks
+if (ax eq 'x') && (endticks eq 1) then begin
+  xr=opl.xrange
+  xtv=opl.xtickv
+  ti=abs(xtv[-1]-xtv[-2])
+  if abs(xr[1]-xtv[-1]) gt self.xtickratio*ti then endticks=3
+endif
+if (ax eq 'y') && (endticks eq 1) then begin
+  xr=opl.yrange
+  xtv=opl.ytickv
+  ti=abs(xtv[-1]-xtv[-2])
+  if abs(xr[1]-xtv[-1]) gt self.ytickratio*ti then endticks=3
+endif
+
+
 if (endticks ne 3) then begin
   axes=opl[ax+'axis']
   if axes eq obj_new() then axes=[]
@@ -1547,5 +1577,6 @@ compile_opt idl2, logical_predicate
  xendticks:list(),yendticks:list(),$ ;x/y endticks for each plot in the grid
  xgap:0d0,ygap:0d0,$ ;x/y gap between plots
  xsupressdivision:0B,ysupressdivision:0B,$ ;Supress the lines between plots in x/y
- graphproperties:obj_new()} ;Default properties for individual graphs
+ graphproperties:obj_new(),$ ;Default properties for individual graphs
+ xtickratio:0d0,ytickratio:0d0};Parameter to decide if the last tick on an axis should not be auto suppressed
 end
