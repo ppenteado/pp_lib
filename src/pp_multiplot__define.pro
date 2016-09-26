@@ -282,8 +282,8 @@ if (n_elements(gytitle) eq 1) then self.setproperty,global_ytitle=gytitle
 if (n_elements(gtitle) ne 0) then self.setproperty,title=gtitle
 if (n_elements(xsupressdivision) ne 0) then self.xsupressdivision=xsupressdivision
 if (n_elements(ysupressdivision) ne 0) then self.ysupressdivision=ysupressdivision
-if (n_elements(xtickratio) ne 0) then self.xtickratio=xtickratio
-if (n_elements(ytickratio) ne 0) then self.ytickratio=ytickratio
+self.xtickratio=n_elements(xtickratio) ? xtickratio : 0.2d0
+self.ytickratio=n_elements(ytickratio) ? ytickratio : 0.2d0
 
 self.graphproperties=n_elements(graphproperties) ? hash(graphproperties) : hash()
 
@@ -1049,14 +1049,16 @@ compile_opt idl2,logical_predicate,hidden
 if (ax eq 'x') && (endticks eq 1) then begin
   xr=opl.xrange
   xtv=opl.xtickv
+  nt=n_elements(xtv)
   ti=abs(xtv[-1]-xtv[-2])
-  if abs(xr[1]-xtv[-1]) gt self.xtickratio*ti then endticks=3
+  if ((abs(xr[1]-xtv[-1]))<(abs(xr[1]-xtv[0]))) gt self.xtickratio*ti*(nt/3d0) then endticks=3
 endif
 if (ax eq 'y') && (endticks eq 1) then begin
   xr=opl.yrange
   xtv=opl.ytickv
+  nt=n_elements(xtv)
   ti=abs(xtv[-1]-xtv[-2])
-  if abs(xr[1]-xtv[-1]) gt self.ytickratio*ti then endticks=3
+  if ((abs(xr[1]-xtv[-1]))<(abs(xr[1]-xtv[0]))) gt self.ytickratio*ti*(nt/3d0) then endticks=3
 endif
 
 
@@ -1506,6 +1508,35 @@ endif
 
 end
 
+pro pp_multiplot::decideintervals,dprange,dticks,dint,decide=decide,newrange=newrange,dminor=dminor,newdticks=newdticks;New algorithm
+  compile_opt idl2,logical_predicate,hidden
+  intervals=[2d0,1d0,1d0,0.5d0];,0.25d0] ;Possible interval multipliers to use
+  intrats=[0.2d0,0.1d0,1d0,0.5d0];,0.25d0] ;Possible normalized interval multipliers
+  minors=[4,10,10,5]
+  nintervals=n_elements(intervals)
+  ints=[6,5,4,3] ;Possible number of intervals
+  nints=n_elements(ints)
+  mindiff=!values.d_infinity
+  for i=0,nints-1 do begin ;Try every number of intervals, to find out which one gives nicer intervals
+    dints=double(dprange[1]-dprange[0])/ints[i]
+    al=alog10(dints)
+    dints=al ge 0d0 ? 1d1^((al mod 1)-1d0) : 1d1^(al mod 1)
+    tmp=min(abs(dints-intrats),minloc)
+    if ((tmp-mindiff) lt -(machar(/double)).eps) then begin
+      mindiff=tmp
+      minint=intervals[minloc]
+      sints=ints[i]
+      dint=intrats[minloc]*1d1^ceil(al)
+      dminor=minors[minloc]
+    endif
+    ;print,ints[i],minint,tmp,sints,dint
+  endfor
+  newrange=dint*[floor(dprange[0]/dint),ceil(dprange[1]/dint)]
+  dticks=sints+1d0
+  newdticks=(newrange[1]-newrange[0])/dint
+end
+
+
 ;+
 ; :Description:
 ;    This method should be called after one or more plots in the multiplot had
@@ -1513,8 +1544,31 @@ end
 ;    range, for instance), so that the end ticks get fixed.
 ;
 ;-
-pro pp_multiplot::updateranges
+pro pp_multiplot::updateranges,x=x,y=y
 compile_opt idl2,logical_predicate
+
+if keyword_set(x) then begin
+  dint=0d0
+  dticks=0
+  xranges=(self.xranges)[*]
+  foreach xr,xranges,ix do begin
+    self.decideintervals,xr,dtick,dint,newrange=nr
+    xranges[ix]=nr
+  endforeach
+  self.setproperty,xranges=xranges
+endif
+
+if keyword_set(x) then begin
+  dint=0d0
+  dticks=0
+  xranges=(self.xranges)[*]
+  foreach xr,xranges,ix do begin
+    self.decideintervals,xr,dtick,dint,newrange=nr
+    xranges[ix]=nr
+  endforeach
+  self.setproperty,yranges=yranges
+endif
+
 foreach el,self.oplots,iel do if isa(el) then begin
   el['yaxis'].tickname=''
   el['xaxis'].tickname=''
