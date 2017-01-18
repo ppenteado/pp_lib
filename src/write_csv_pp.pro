@@ -27,9 +27,8 @@ function write_csv_convert_pp_original, data,noquote=noquote
         data1=data
         nq=where((strpos(data,'"') ge 0) or (strpos(data,',') ge 0),nnq)
         if (nnq gt 0) then begin
-          d=data[nq]
-        endif
           data1[nq]='"'+data[nq]+'"'
+        endif
       endif else begin
         data1 = '"'+data+'"'
       endelse
