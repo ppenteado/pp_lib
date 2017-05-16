@@ -455,7 +455,8 @@ pro pp_drawsphericalpoly,ilons,ilats,icolors,_ref_extra=ex,$
   stackmap=stackm,original_image=origim,maxstack=maxstack,$
   stacklist=stacklist,stackcount=stackc,verbose=verbose,do_stack=do_stack,$
   weights=weights,stackweights=stackw,stackindex=stacki,pcount=pcount,no_fix_lon=no_fix_lon,$
-  map_structure=mapstr,image_mapstr=image_mapstr,xsize=xsize,ysize=ysize,e_map=e_map
+  map_structure=mapstr,image_mapstr=image_mapstr,xsize=xsize,ysize=ysize,e_map=e_map,$
+  bmin=bmin,bmax=bmax,bnan=bnan,btop=btop
 compile_opt idl2,logical_predicate
 
 
@@ -551,7 +552,7 @@ if n_elements(rgbt) then begin
     endelse
   endelse
   ;Map the input colors into the [0,255] range
-  iicolors=bytscl(colors)
+  iicolors=isa(colors,'byte') ? colors : bytscl(colors,min=bmin,max=bmax,nan=bnan,top=btop)
 endif else begin
   iicolors=colors  
 endelse
