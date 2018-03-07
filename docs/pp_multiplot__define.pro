@@ -149,7 +149,8 @@
 ;    Which will make the plot look like
 ;    
 ;    .. image:: pp_multiplot_ex8.png
-;       
+;
+; :Todo: Document how to use internal objects, like global_xtitle
 ;
 ; :Version: 20101027
 ; 

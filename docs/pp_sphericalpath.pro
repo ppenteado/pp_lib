@@ -136,7 +136,11 @@ if isa(lons,'list') && isa (lats,'list') then begin
           countt=n_elements(tmp)/2LL
           tmp=i eq 0 ? tmp[*,[0,countt-1]] : tmp[*,[countt-1]]
         endelse
-      endif else tmp=map_2points(ilons[i],ilats[i],ilons[i+1],ilats[i+1],dpath=maxlength,_strict_extra=ex)
+      endif else begin
+        tmp=replicate(!values.d_nan,[2,3])
+        if total(finite([ilons[i],ilats[i],ilons[i+1],ilats[i+1]])) eq 4 then $
+          tmp=map_2points(ilons[i],ilats[i],ilons[i+1],ilats[i+1],dpath=maxlength,_strict_extra=ex)
+      endelse
       if ~no_fix_lon then begin
         tmp[0,*]=(tmp[0,*]+360d0) mod 360
         w=where(tmp[0,*] gt 180d0,wc)

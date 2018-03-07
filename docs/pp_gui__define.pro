@@ -130,9 +130,10 @@ end
 ;
 ;-
 function pp_gui::init,debugevent=verbose,_ref_extra=ex,$
-  xsize=xsize,ysize=ysize,title=title,row=row,column=column,mbar=mbar
+  xsize=xsize,ysize=ysize,title=title,row=row,column=column,mbar=mbar,$
+  nodraw=nodraw
 compile_opt idl2,logical_predicate
-self.values=hash()
+self.values=!version.release gt '8.3' ? dictionary() : hash()
 self.verbose=keyword_set(verbose)
 xsize=n_elements(xsize) ? xsize : 600
 ysize=n_elements(ysize) ? ysize : 400
@@ -141,9 +142,11 @@ if (n_elements(row) eq 0) and (n_elements(column) eq 0) then column=1
 ret=self.toplevelbase::init(xsize=xsize,ysize=ysize,title=title,row=row,column=column,$
   _strict_extra=ex,mbar=mbar)
 self.values['mbar']=mbar
-self.creategui
-self.draw
-self.updatewindow
+if ~keyword_set(nodraw) then begin
+  self.creategui
+  self.draw
+  self.updatewindow
+endif
 return,ret
 end
 
