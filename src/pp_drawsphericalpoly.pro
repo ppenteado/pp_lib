@@ -481,6 +481,15 @@ endif else begin
   colors=icolors
 endelse
 
+if n_elements(colors) ne np then begin
+  if n_elements(colors) eq 1 then colors=replicate(colors[0],np)
+  if n_elements(colors) eq 3 then begin
+    ones=replicate(colors[0],np)
+    ones[*]=1
+    colors=colors#ones
+  endif
+endif
+
 verbose=n_elements(verbose) ? verbose : 0
 do_stack=n_elements(do_stack) ? do_stack : 0
 no_fix_lon=keyword_set(no_fix_lon)
@@ -542,8 +551,8 @@ endforeach
 ;Map the colors, if a map is set
 if n_elements(rgbt) then begin
   if n_elements(rgbt) eq 1 then begin
-    loadct,rgbt
-    tvlct,irgbt,/get
+    cgloadct,rgbt,/silent,ncolors=256,rgb_table=irgbt
+    ;tvlct,irgbt,/get
     irgbt=transpose(irgbt)
   endif else begin
     sz=size(rgbt,/dimensions)
