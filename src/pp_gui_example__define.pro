@@ -51,6 +51,13 @@ ret=self.pp_gui::init(_extra=ex,title=title,column=1)
 return,ret
 end
 
+;+
+; :Description:
+;    This method is called by init, to populate the interface with the elements
+;    the user will want.
+;
+; :Author: Paulo Penteado (`http://www.ppenteado.net <http://www.ppenteado.net>`)
+;-
 pro pp_gui_example::creategui
 compile_opt idl2,logical_predicate
 
