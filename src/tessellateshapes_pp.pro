@@ -214,6 +214,6 @@ end
 ; :Author: Paulo Penteado (http://www.ppenteado.net), Aug/2015
 ;-
 pro tessellateshapes_pp
-compile_opt idl2,logical_predicate
+compile_opt idl2,logical_predicate,hidden
 !null='Dummy procedure, exists just to compile IDLitVisPolygon::_TessellateShapes above'  
 end
