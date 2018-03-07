@@ -1,5 +1,5 @@
 ; docformat = 'rst rst'
-;
+;+
 ; Example application, to show how to use pp_gui (which uses the Catalyst Library)
 ; 
 ; Mostly, one would use this program just to read the source code, to see how
@@ -11,6 +11,7 @@
 ; :Examples:
 ;    Load data from IDL's example files, and lanuch this application to visualize
 ;    them::
+;    
 ;      fp=filepath('head.dat',subdirectory=['examples','data'])
 ;      h=read_binary(fp,data_dims=[80,100,57])
 ;      g=pp_gui_example(h)
