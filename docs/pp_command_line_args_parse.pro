@@ -9,6 +9,7 @@
 ;      the command line. Additionally, some arguments are parsed into a hash:
 ;      
 ;      1) -foo is parsed as a hash element with key foo and value 1
+;      
 ;      2) --foo=bar is parsed as a hash element with key foo and value bar
 ;      
 ; :Examples::
