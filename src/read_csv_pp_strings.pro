@@ -99,11 +99,13 @@ function read_csv_pp_strings, Filename, $
   ;New parameters, by Paulo Penteado (http://www.ppenteado.net):
   types=types,$ ;if provided, assume these types codes for the columns, instead of trying to determine
   nan=nan,infinity=infinity,integer=integer,trim=trim,blank=blank,$ ;passed to pp_isnumber when testing columns
-  rows_for_testing=rows_for_testing ;Maximum number of rows to use when testing columns for data types.
+  rows_for_testing=rows_for_testing,$ ;Maximum number of rows to use when testing columns for data types.
                                     ;Set to zero to test all rows
+  delimiter=coldelimiter
   
 
   compile_opt idl2, hidden
+  coldelimiter=keyword_set(coldelimiter) ? coldelimiter : ','
 
   ;ON_ERROR, 2         ;Return on error
 
@@ -162,14 +164,14 @@ function read_csv_pp_strings, Filename, $
   ; Now remove quoted strings, which might contain bogus commas.
   str = STRJOIN(STRTOK(str,'"[^"]*"', /REGEX, /EXTRACT))
   ; Finally, count the number of commas.
-  fieldCount = N_Elements(STRTOK(str, ',', /PRESERVE_NULL))
+  fieldCount = N_Elements(STRTOK(str, coldelimiter, /PRESERVE_NULL))
 
   fieldNames = Read_CSV_Fieldnames(fieldCount)
 
   template = { $
     version:         1.0, $
     dataStart:       dataStart, $  ; specified as a keyword below
-    delimiter:       BYTE(','), $  ; comma-separated
+    delimiter:       BYTE(coldelimiter), $  ; coldelimiter-separated
     missingValue:    0, $
     commentSymbol:   '', $
     fieldCount:      fieldCount, $
@@ -182,7 +184,7 @@ function read_csv_pp_strings, Filename, $
   if (N_Elements(numRecordsIn)) then $
     numRecords = numRecordsIn[0] + 1
 
-  data = READ_ASCII(filename, /CSV, $
+  data = READ_ASCII(filename, csv=(coldelimiter eq ','), $
     COUNT=count, $
     DATA_START=dataStart, $
     NUM_RECORDS=numRecords, $
